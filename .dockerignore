@@ -1,0 +1,23 @@
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+node_modules
+frontend/node_modules
+frontend/dist
+__pycache__
+*.py[cod]
+.pytest_cache
+.mypy_cache
+.coverage
+htmlcov
+.vscode
+.idea
+backups
+*.zip
+*.log
+
+# Durable local scraper spool must never enter Docker build context
+data/scraper-staging
+data/scraper-staging/**

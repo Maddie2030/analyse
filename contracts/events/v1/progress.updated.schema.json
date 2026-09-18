@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "progress.updated v1 payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "user_id",
+    "series_id",
+    "chapter_id",
+    "last_page",
+    "scroll_position",
+    "updated_at"
+  ],
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "series_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "chapter_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "last_page": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "scroll_position": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

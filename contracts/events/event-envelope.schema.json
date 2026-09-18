@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mreader.local/contracts/events/event-envelope.schema.json",
+  "title": "MReader Event Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "event_id",
+    "event_type",
+    "event_version",
+    "aggregate_type",
+    "aggregate_id",
+    "occurred_at",
+    "producer",
+    "payload"
+  ],
+  "properties": {
+    "event_id": {"type": "string", "format": "uuid"},
+    "event_type": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^[a-z][a-z0-9_-]*(\\.[a-z][a-z0-9_-]*)+$"
+    },
+    "event_version": {"type": "integer", "minimum": 1},
+    "aggregate_type": {"type": "string", "minLength": 1, "maxLength": 64},
+    "aggregate_id": {"type": "string", "minLength": 1, "maxLength": 255},
+    "occurred_at": {"type": "string", "format": "date-time"},
+    "producer": {"type": "string", "minLength": 1, "maxLength": 100},
+    "correlation_id": {
+      "oneOf": [
+        {"type": "string", "format": "uuid"},
+        {"type": "null"}
+      ]
+    },
+    "causation_id": {
+      "oneOf": [
+        {"type": "string", "format": "uuid"},
+        {"type": "null"}
+      ]
+    },
+    "payload": {"type": "object"},
+    "metadata": {
+      "type": "object",
+      "additionalProperties": {"type": ["string", "number", "boolean", "null"]}
+    }
+  }
+}

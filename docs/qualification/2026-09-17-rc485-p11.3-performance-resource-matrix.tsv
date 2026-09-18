@@ -1,0 +1,24 @@
+gate	result	evidence
+keda_scaler_contract_current_identity	PASS	workload-aware-scale-to-zero.sh after stale pre-P09.3 assertion correction; production deploy unchanged
+p09_3_keda_role_scope_guards	PASS	18 tests + 3 subtests
+hot_path_concurrency_cache_static	PASS	tests/regression/hot-path-concurrency-cache-static.sh
+hybrid_concurrency_static	PASS	tests/regression/hybrid-concurrency-static.sh
+pressure_efficiency_static	PASS	tests/regression/pressure-efficiency-static.sh
+user_plane_resource_budget	PASS	3392Mi/3584Mi limits; 1536Mi/3072Mi requests; 192Mi limit headroom
+twin_plane_resource_budget	PASS	all four defined worker-pressure scenarios within existing quota
+progress_web_concurrency	PASS	31/31 Web reading ordering/concurrency/local-pending cases
+p02_reading_source	PASS	7 tests + 3 subtests
+publication_ingestion_source_concurrency	PASS	120 tests + 112 subtests
+webp_publish_verification_static	PASS	tests/regression/webp-publish-verification-static.sh
+load_fixture_shell_syntax	PASS	bash -n on load/static runners
+load_fixture_javascript_syntax	PASS	node --check tests/load/*.js
+load_fixture_python_syntax	PASS	python3 -m py_compile tests/load/seed.py
+smart_library_query_shape	PASS_SOURCE_ONLY	one user-scoped/materialized SQL statement; page <=100; recent <=12; supporting indexes present
+smart_library_real_query_plan	BLOCKED	PostgreSQL/psql unavailable; no EXPLAIN ANALYZE/BUFFERS executed
+real_concurrent_reading	BLOCKED	Docker/PostgreSQL/Kubernetes runtime unavailable
+real_concurrent_publication	BLOCKED	Docker/PostgreSQL/RabbitMQ/workers/NAS runtime unavailable
+spike_load	BLOCKED	run-spike-tests.sh exits 2 before workload: docker required
+soak_load	BLOCKED	run-soak-tests.sh exits 2 before workload: docker required
+live_keda_hpa_behavior	BLOCKED	kubectl/Kubernetes/KEDA runtime unavailable
+live_multi_replica_cache_behavior	BLOCKED	Docker/Kubernetes/Redis-Valkey service topology unavailable
+perf_01_release_acceptance	BLOCKED	runtime query-plan/concurrency/load/autoscaler/cache budgets remain unexecuted

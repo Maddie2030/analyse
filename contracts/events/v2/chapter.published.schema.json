@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "chapter.published v2 payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "chapter_id",
+    "series_id",
+    "chapter_revision",
+    "chapter_number",
+    "chapter_slug",
+    "series_slug",
+    "page_count",
+    "published_at"
+  ],
+  "properties": {
+    "chapter_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "series_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "chapter_revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "chapter_number": {
+      "type": "number"
+    },
+    "chapter_slug": {
+      "type": "string",
+      "minLength": 1
+    },
+    "series_slug": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "page_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "published_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

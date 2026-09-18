@@ -1,0 +1,2 @@
+API manifest structural audit PASS; semantic audit deferred to Dockerized API gate (no host Python).
+API route coverage static regression PASS: 139 classified routes

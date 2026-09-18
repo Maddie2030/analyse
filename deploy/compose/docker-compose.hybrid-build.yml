@@ -1,0 +1,60 @@
+name: mreader-hybrid-build
+
+# Build-only Compose definition for images loaded directly into Docker Desktop's
+# Kubernetes runtime. It intentionally contains no runtime infrastructure,
+# ports, volumes, networks, or application environment.
+services:
+  auth_service:
+    image: mreader/auth-service:v1.3.0-rc4.84
+    build:
+      context: ../..
+      dockerfile: services/auth_service/Dockerfile
+  catalog_go:
+    image: mreader/catalog-go:v1.3.0-rc4.84
+    build:
+      context: ../..
+      dockerfile: services/catalog_go/Dockerfile
+  reader_go:
+    image: mreader/reader-go:v1.3.0-rc4.84
+    build:
+      context: ../..
+      dockerfile: services/reader_go/Dockerfile
+  progress_go:
+    image: mreader/progress-go:v1.3.0-rc4.84
+    build:
+      context: ../..
+      dockerfile: services/progress_go/Dockerfile
+  social_ts:
+    image: mreader/social-ts:v1.3.0-rc4.84
+    build:
+      context: ../..
+      dockerfile: services/social_ts/Dockerfile
+  scraper_service:
+    image: mreader/scraper-service:v1.3.0-rc4.84
+    build:
+      context: ../..
+      dockerfile: services/scraper_service/Dockerfile
+  image_service:
+    image: mreader/image-service:v1.3.0-rc4.84
+    build:
+      context: ../..
+      dockerfile: services/image_service/Dockerfile
+  frontend:
+    image: mreader/frontend:v1.3.0-rc4.84
+    build:
+      context: ../../frontend
+  outbox_relay:
+    image: mreader/outbox-relay:v1.3.0-rc4.84
+    build:
+      context: ../..
+      dockerfile: services/outbox_relay/Dockerfile
+  notification_worker:
+    image: mreader/notification-worker:v1.3.0-rc4.84
+    build:
+      context: ../..
+      dockerfile: services/notification_worker/Dockerfile
+  realtime_go:
+    image: mreader/realtime-go:v1.3.0-rc4.84
+    build:
+      context: ../..
+      dockerfile: services/realtime_go/Dockerfile

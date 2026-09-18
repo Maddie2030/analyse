@@ -1,0 +1,9 @@
+groups:
+  - name: mreader-platform
+    rules:
+      - alert: RabbitMQMetricsUnavailable
+        expr: up{job="rabbitmq"} == 0
+        for: 5m
+        labels: {severity: warning}
+        annotations:
+          summary: "RabbitMQ metrics endpoint is unavailable"

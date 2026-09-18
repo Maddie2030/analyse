@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "chapter.created v1 payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["chapter_id", "series_id", "chapter_number", "chapter_slug", "status", "created_at"],
+  "properties": {
+    "chapter_id": {"type": "string", "format": "uuid"},
+    "series_id": {"type": "string", "format": "uuid"},
+    "chapter_number": {"type": "number"},
+    "chapter_slug": {"type": "string", "minLength": 1},
+    "title": {"type": ["string", "null"]},
+    "status": {"type": "string", "minLength": 1},
+    "created_at": {"type": "string", "format": "date-time"}
+  }
+}

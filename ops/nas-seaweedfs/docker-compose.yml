@@ -1,0 +1,84 @@
+name: mreader-seaweedfs-nas
+
+services:
+  seaweedfs-master:
+    image: chrislusf/seaweedfs:4.41
+    restart: unless-stopped
+    command: >-
+      master -ip=seaweedfs-master -ip.bind=0.0.0.0 -port=9333
+      -mdir=/data -volumeSizeLimitMB=${SEAWEEDFS_VOLUME_SIZE_LIMIT_MB:-2048}
+      -defaultReplication=000
+    volumes:
+      - ${NAS_MASTER_DATA_DIR:-/srv/seaweed/ssd/meta/master}:/data
+    ports:
+      - 127.0.0.1:9333:9333
+    networks: [seaweed]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://127.0.0.1:9333/dir/status"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 15s
+    mem_limit: ${SEAWEED_MASTER_MEMORY_LIMIT:-256m}
+    cpus: ${SEAWEED_MASTER_CPU_LIMIT:-0.35}
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+
+  seaweedfs-volume-hdd:
+    image: chrislusf/seaweedfs:4.41
+    restart: unless-stopped
+    command: >-
+      volume -ip=seaweedfs-volume-hdd -ip.bind=0.0.0.0 -port=8080
+      -mserver=seaweedfs-master:9333 -dir=/data
+    volumes:
+      - ${NAS_VOLUME_DATA_DIR:-/srv/seaweed/hdd/volumes}:/data
+    depends_on:
+      seaweedfs-master:
+        condition: service_healthy
+    expose: ["8080", "18080"]
+    networks: [seaweed]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/status"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 20s
+    mem_limit: ${SEAWEED_VOLUME_MEMORY_LIMIT:-1g}
+    cpus: ${SEAWEED_VOLUME_CPU_LIMIT:-1.0}
+    logging:
+      driver: json-file
+      options: {max-size: "20m", max-file: "3"}
+
+  seaweedfs-filer:
+    image: chrislusf/seaweedfs:4.41
+    restart: unless-stopped
+    command: >-
+      filer -ip=seaweedfs-filer -ip.bind=0.0.0.0 -port=8888
+      -master=seaweedfs-master:9333 -defaultStoreDir=/data
+    volumes:
+      - ${NAS_FILER_DATA_DIR:-/srv/seaweed/ssd/meta/filer}:/data
+    depends_on:
+      seaweedfs-master:
+        condition: service_healthy
+      seaweedfs-volume-hdd:
+        condition: service_healthy
+    ports:
+      - ${NAS_BIND_IP:-0.0.0.0}:${NAS_SEAWEEDFS_PORT:-8888}:8888
+    expose: ["18888"]
+    networks: [seaweed]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8888/"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 20s
+    mem_limit: ${SEAWEED_FILER_MEMORY_LIMIT:-512m}
+    cpus: ${SEAWEED_FILER_CPU_LIMIT:-0.6}
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+
+networks:
+  seaweed:
+    driver: bridge

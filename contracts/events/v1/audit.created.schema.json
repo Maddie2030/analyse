@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "audit.created v1 payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["audit_id", "action", "entity_type", "entity_id", "created_at"],
+  "properties": {
+    "audit_id": {"type": "string", "format": "uuid"},
+    "actor_user_id": {"type": ["string", "null"], "format": "uuid"},
+    "action": {"type": "string", "minLength": 1, "maxLength": 128},
+    "entity_type": {"type": "string", "minLength": 1, "maxLength": 64},
+    "entity_id": {"type": "string", "minLength": 1, "maxLength": 255},
+    "details": {"type": "object"},
+    "created_at": {"type": "string", "format": "date-time"}
+  }
+}

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Release/main configuration is HTTPS-only. Debug overrides this file. -->
+    <base-config cleartextTrafficPermitted="false" />
+</network-security-config>

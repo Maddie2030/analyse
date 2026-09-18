@@ -1,0 +1,17 @@
+# workload|service|kind|p95_slo_ms|p99_slo_ms|max_level|notes
+gateway_health|user-gateway|arrival|120|300|300|Gateway routing/health baseline
+auth_login|auth-service|arrival|1200|2500|300|May hit intended login/rate-limit policy before compute capacity
+auth_profile|auth-service|arrival|350|800|300|Authenticated session validation/profile read
+catalog_discover|catalog-go|arrival|500|1200|300|Discovery/read-cache hot path
+catalog_list|catalog-go|arrival|500|1200|300|Series listing/pagination hot path
+catalog_detail|catalog-go|arrival|450|1000|300|Single-series detail hot path
+catalog_chapter_search|catalog-go|arrival|550|1200|300|Server-side chapter search across published chapters
+reader_manifest|reader-go|arrival|700|1500|300|Manifest + chapter grant generation
+reader_image|reader-go+image-edge|arrival|500|1000|300|Protected cached image authorization/delivery
+progress_get|progress-go|arrival|450|1000|300|Progress read path
+progress_put|progress-go|arrival|600|1200|300|Progress commit/stream path; shared-user hot-key stress
+progress_series_state|progress-go|arrival|500|1100|300|Series reading-state read
+social_viewer_state|social-ts|arrival|650|1400|300|Aggregated viewer-state query
+social_comments|social-ts|arrival|650|1400|300|Comment list read path
+admin_scraper_operations|scraper-service|arrival|800|1700|300|Authenticated Admin operation-list read
+realtime_ws|realtime-go|connections|600|1500|300|Concurrent authenticated WebSocket connection establishment/hold

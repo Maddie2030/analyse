@@ -1,0 +1,6244 @@
+{
+  "contract": "mreader.ownership-routes",
+  "version": 1,
+  "generated_from": {
+    "route_coverage": "tests/api/endpoint_coverage.tsv",
+    "user_gateway": "deploy/docker-desktop-hybrid/Caddyfile.user",
+    "admin_gateway": "deploy/docker-desktop-hybrid/Caddyfile.admin"
+  },
+  "routes": [
+    {
+      "operation": "catalog.delete.api-catalog-admin-announcements-id",
+      "method": "DELETE",
+      "path": "/api/catalog/admin/announcements/{id}",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.deleteAnnouncement",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "announcements",
+          "actions": [
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_04_catalog_reads.py"
+      ]
+    },
+    {
+      "operation": "catalog.delete.api-catalog-admin-editor-picks-id",
+      "method": "DELETE",
+      "path": "/api/catalog/admin/editor-picks/{id}",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.deleteEditorPick",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "editor_picks",
+          "actions": [
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_04_catalog_reads.py"
+      ]
+    },
+    {
+      "operation": "catalog.delete.api-catalog-series-seriesid",
+      "method": "DELETE",
+      "path": "/api/catalog/series/{seriesID}",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.deleteSeries",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "series",
+          "actions": [
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_04_catalog_reads.py"
+      ]
+    },
+    {
+      "operation": "catalog.delete.api-catalog-series-seriesid-chapters-chapterid",
+      "method": "DELETE",
+      "path": "/api/catalog/series/{seriesID}/chapters/{chapterID}",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.deleteChapter",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "chapters",
+          "actions": [
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_04_catalog_reads.py"
+      ]
+    },
+    {
+      "operation": "scraper.delete.api-scraper-drafts-draft-id-pages-page-id",
+      "method": "DELETE",
+      "path": "/api/scraper/drafts/{draft_id}/pages/{page_id}",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_draft_remove_page",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        },
+        {
+          "kind": "filesystem",
+          "resource": "scraper-staging",
+          "actions": [
+            "write"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "filesystem",
+          "name": "local-staging"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_24_deep_route_coverage.py"
+      ]
+    },
+    {
+      "operation": "scraper.delete.api-scraper-operations-draft-id",
+      "method": "DELETE",
+      "path": "/api/scraper/operations/{draft_id}",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_cancel_operation",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "ingestion_operations",
+          "actions": [
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_18_scraper_operations.py"
+      ]
+    },
+    {
+      "operation": "scraper.delete.api-scraper-series-drafts-chapters-chapter-id-pages-page-id",
+      "method": "DELETE",
+      "path": "/api/scraper/series-drafts/chapters/{chapter_id}/pages/{page_id}",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_series_draft_remove_page",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_series_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        },
+        {
+          "kind": "filesystem",
+          "resource": "scraper-staging",
+          "actions": [
+            "write"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "filesystem",
+          "name": "local-staging"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_15_scraper_new_series.py"
+      ]
+    },
+    {
+      "operation": "scraper.delete.api-scraper-series-drafts-draft-id-cover",
+      "method": "DELETE",
+      "path": "/api/scraper/series-drafts/{draft_id}/cover",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_series_cover_remove",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_series_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        },
+        {
+          "kind": "filesystem",
+          "resource": "scraper-staging",
+          "actions": [
+            "write"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "filesystem",
+          "name": "local-staging"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_15_scraper_new_series.py"
+      ]
+    },
+    {
+      "operation": "social.delete.api-social-bookmarks-seriesid",
+      "method": "DELETE",
+      "path": "/api/social/bookmarks/{seriesId}",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "social",
+      "handler": "services/social_ts/src/routes.ts:DELETE /api/social/bookmarks/{seriesId}",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "bookmarks",
+          "actions": [
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_09_bookmarks.py"
+      ]
+    },
+    {
+      "operation": "social.delete.api-social-comments-commentid",
+      "method": "DELETE",
+      "path": "/api/social/comments/{commentId}",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "social",
+      "handler": "services/social_ts/src/routes.ts:DELETE /api/social/comments/{commentId}",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "comments",
+          "actions": [
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_11_comments.py"
+      ]
+    },
+    {
+      "operation": "social.delete.api-social-series-seriesid-rating",
+      "method": "DELETE",
+      "path": "/api/social/series/{seriesId}/rating",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "social",
+      "handler": "services/social_ts/src/routes.ts:DELETE /api/social/series/{seriesId}/rating",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "series_ratings",
+          "actions": [
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        },
+        {
+          "kind": "android",
+          "name": "mreader-android"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_04_catalog_reads.py"
+      ]
+    },
+    {
+      "operation": "social.delete.api-social-subscriptions-seriesid",
+      "method": "DELETE",
+      "path": "/api/social/subscriptions/{seriesId}",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "social",
+      "handler": "services/social_ts/src/routes.ts:DELETE /api/social/subscriptions/{seriesId}",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "subscriptions",
+          "actions": [
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_10_subscriptions.py"
+      ]
+    },
+    {
+      "operation": "media.delete.api-upload-series-series-slug-thumbnail-thumbnail-name",
+      "method": "DELETE",
+      "path": "/api/upload/series/{series_slug}/thumbnail/{thumbnail_name}",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "media",
+      "handler": "services/image_service/app/routers/upload.py:delete_series_thumbnail",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "media_operations",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        },
+        {
+          "kind": "seaweedfs",
+          "resource": "media-objects",
+          "actions": [
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "seaweedfs",
+          "name": "nas-media"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_13_media.py"
+      ]
+    },
+    {
+      "operation": "media.delete.api-upload-series-slug-chapter-slug",
+      "method": "DELETE",
+      "path": "/api/upload/{series_slug}/{chapter_slug}",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "media",
+      "handler": "services/image_service/app/routers/upload.py:delete_chapter_files",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "media_operations",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        },
+        {
+          "kind": "seaweedfs",
+          "resource": "media-objects",
+          "actions": [
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "seaweedfs",
+          "name": "nas-media"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_13_media.py"
+      ]
+    },
+    {
+      "operation": "database-protection.get.api-admin-database",
+      "method": "GET",
+      "path": "/api/admin/database",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "database-protection",
+      "handler": "services/scraper_service/app/database_facade.py:admin_database_protection_status",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_25_database_protection.py"
+      ]
+    },
+    {
+      "operation": "database-protection.get.api-admin-database-backups-backup-id-download",
+      "method": "GET",
+      "path": "/api/admin/database/backups/{backup_id}/download",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "database-protection",
+      "handler": "services/scraper_service/app/database_facade.py:admin_download_database_backup",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_25_database_protection.py"
+      ]
+    },
+    {
+      "operation": "auth.get.api-auth-admin-stats",
+      "method": "GET",
+      "path": "/api/auth/admin/stats",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "auth",
+      "handler": "services/auth_service/app/routers/auth.py:admin_stats",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "cache",
+          "name": "valkey"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_03_auth_session_profile.py"
+      ]
+    },
+    {
+      "operation": "auth.get.api-auth-profile",
+      "method": "GET",
+      "path": "/api/auth/profile",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "auth",
+      "handler": "services/auth_service/app/routers/auth.py:get_profile",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "cache",
+          "name": "valkey"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_01_health_gateway.py"
+      ]
+    },
+    {
+      "operation": "catalog.get.api-catalog-admin-curation",
+      "method": "GET",
+      "path": "/api/catalog/admin/curation",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.adminCuration",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_05_catalog_admin_writes.py"
+      ]
+    },
+    {
+      "operation": "catalog.get.api-catalog-admin-stats",
+      "method": "GET",
+      "path": "/api/catalog/admin/stats",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.adminStats",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_23_endpoint_contract_matrix.py"
+      ]
+    },
+    {
+      "operation": "catalog.get.api-catalog-curation",
+      "method": "GET",
+      "path": "/api/catalog/curation",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.curation",
+      "version": "v1",
+      "authentication": {
+        "mode": "none",
+        "principal": "anonymous",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_04_catalog_reads.py"
+      ]
+    },
+    {
+      "operation": "catalog.get.api-catalog-discover",
+      "method": "GET",
+      "path": "/api/catalog/discover",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.discovery",
+      "version": "v1",
+      "authentication": {
+        "mode": "none",
+        "principal": "anonymous",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_04_catalog_reads.py"
+      ]
+    },
+    {
+      "operation": "catalog.get.api-catalog-genres",
+      "method": "GET",
+      "path": "/api/catalog/genres",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.genres",
+      "version": "v1",
+      "authentication": {
+        "mode": "none",
+        "principal": "anonymous",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_01_health_gateway.py"
+      ]
+    },
+    {
+      "operation": "catalog.get.api-catalog-series",
+      "method": "GET",
+      "path": "/api/catalog/series",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.listSeries",
+      "version": "v1",
+      "authentication": {
+        "mode": "none",
+        "principal": "anonymous",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_04_catalog_reads.py"
+      ]
+    },
+    {
+      "operation": "catalog.get.api-catalog-series-slug",
+      "method": "GET",
+      "path": "/api/catalog/series/{slug}",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.seriesDetail",
+      "version": "v1",
+      "authentication": {
+        "mode": "none",
+        "principal": "anonymous",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_04_catalog_reads.py"
+      ]
+    },
+    {
+      "operation": "catalog.get.api-catalog-series-slug-chapters-chapterslug",
+      "method": "GET",
+      "path": "/api/catalog/series/{slug}/chapters/{chapterSlug}",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.chapterDetail",
+      "version": "v1",
+      "authentication": {
+        "mode": "none",
+        "principal": "anonymous",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_04_catalog_reads.py"
+      ]
+    },
+    {
+      "operation": "catalog.get.api-catalog-tags",
+      "method": "GET",
+      "path": "/api/catalog/tags",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.tags",
+      "version": "v1",
+      "authentication": {
+        "mode": "none",
+        "principal": "anonymous",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_04_catalog_reads.py"
+      ]
+    },
+    {
+      "operation": "catalog.get.api-catalog-trending",
+      "method": "GET",
+      "path": "/api/catalog/trending",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.trending",
+      "version": "v1",
+      "authentication": {
+        "mode": "none",
+        "principal": "anonymous",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_04_catalog_reads.py"
+      ]
+    },
+    {
+      "operation": "reader.get.api-mobile-v1-health",
+      "method": "GET",
+      "path": "/api/mobile/v1/health",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "reader",
+      "handler": "services/reader_go/internal/httpapi/api.go:a.mobileHealth",
+      "version": "v1",
+      "authentication": {
+        "mode": "none",
+        "principal": "anonymous",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "cache",
+          "name": "valkey"
+        }
+      ],
+      "consumers": [],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_27_mobile_reader_adapter.py"
+      ]
+    },
+    {
+      "operation": "reader.get.api-mobile-v1-reader-seriesslug-chapterslug-page-pagenumber",
+      "method": "GET",
+      "path": "/api/mobile/v1/reader/{seriesSlug}/{chapterSlug}/page/{pageNumber}",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "reader",
+      "handler": "services/reader_go/internal/httpapi/api.go:a.mobilePage",
+      "version": "v1",
+      "authentication": {
+        "mode": "none",
+        "principal": "anonymous",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "cache",
+          "name": "valkey"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "android",
+          "name": "mreader-android"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_27_mobile_reader_adapter.py"
+      ]
+    },
+    {
+      "operation": "notifications.get.api-notifications",
+      "method": "GET",
+      "path": "/api/notifications",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "notifications",
+      "handler": "services/social_ts/src/routes.ts:GET /api/notifications",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_12_notifications.py"
+      ]
+    },
+    {
+      "operation": "notifications.get.api-notifications-admin-stats",
+      "method": "GET",
+      "path": "/api/notifications/admin/stats",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "notifications",
+      "handler": "services/social_ts/src/routes.ts:GET /api/notifications/admin/stats",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_12_notifications.py"
+      ]
+    },
+    {
+      "operation": "notifications.get.api-notifications-count",
+      "method": "GET",
+      "path": "/api/notifications/count",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "notifications",
+      "handler": "services/social_ts/src/routes.ts:GET /api/notifications/count",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_12_notifications.py"
+      ]
+    },
+    {
+      "operation": "progress.get.api-progress-history",
+      "method": "GET",
+      "path": "/api/progress/history",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "progress",
+      "handler": "services/progress_go/internal/httpapi/api.go:a.history",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_06_reader_manifest_history.py"
+      ]
+    },
+    {
+      "operation": "progress.get.api-progress-series-seriesslug-state",
+      "method": "GET",
+      "path": "/api/progress/series/{seriesSlug}/state",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "progress",
+      "handler": "services/progress_go/internal/httpapi/api.go:a.getSeriesState",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        },
+        {
+          "kind": "android",
+          "name": "mreader-android"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_06_reader_manifest_history.py"
+      ]
+    },
+    {
+      "operation": "progress.get.api-progress-seriesslug-chapterslug",
+      "method": "GET",
+      "path": "/api/progress/{seriesSlug}/{chapterSlug}",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "progress",
+      "handler": "services/progress_go/internal/httpapi/api.go:a.getProgress",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_06_reader_manifest_history.py"
+      ]
+    },
+    {
+      "operation": "reader.get.api-reader-seriesslug-chapterslug",
+      "method": "GET",
+      "path": "/api/reader/{seriesSlug}/{chapterSlug}",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "reader",
+      "handler": "services/reader_go/internal/httpapi/api.go:a.reader",
+      "version": "v1",
+      "authentication": {
+        "mode": "none",
+        "principal": "anonymous",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "cache",
+          "name": "valkey"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_06_reader_manifest_history.py"
+      ]
+    },
+    {
+      "operation": "realtime.get.api-realtime-ws",
+      "method": "GET",
+      "path": "/api/realtime/ws",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "realtime",
+      "handler": "services/realtime_go/cmd/realtime/main.go:websocketHandler",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/browser/notification-realtime.spec.mjs"
+      ]
+    },
+    {
+      "operation": "scraper.get.api-scraper-admin-series",
+      "method": "GET",
+      "path": "/api/scraper/admin/series",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_series_search",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_01_health_gateway.py"
+      ]
+    },
+    {
+      "operation": "scraper.get.api-scraper-admin-series-series-id",
+      "method": "GET",
+      "path": "/api/scraper/admin/series/{series_id}",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_series_detail",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_14_scraper_existing_batch.py"
+      ]
+    },
+    {
+      "operation": "scraper.get.api-scraper-admin-staging-health",
+      "method": "GET",
+      "path": "/api/scraper/admin/staging-health",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_staging_health",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_23_endpoint_contract_matrix.py"
+      ]
+    },
+    {
+      "operation": "scraper.get.api-scraper-batches",
+      "method": "GET",
+      "path": "/api/scraper/batches",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_list_batches",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_14_scraper_existing_batch.py"
+      ]
+    },
+    {
+      "operation": "scraper.get.api-scraper-batches-failed",
+      "method": "GET",
+      "path": "/api/scraper/batches/failed",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_failed_batch_items",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_23_endpoint_contract_matrix.py"
+      ]
+    },
+    {
+      "operation": "scraper.get.api-scraper-batches-batch-id",
+      "method": "GET",
+      "path": "/api/scraper/batches/{batch_id}",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_batch_detail",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_14_scraper_existing_batch.py"
+      ]
+    },
+    {
+      "operation": "scraper.get.api-scraper-drafts-draft-id",
+      "method": "GET",
+      "path": "/api/scraper/drafts/{draft_id}",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/existing_series_publication_routes.py:existing_series_draft_status",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_14_scraper_existing_batch.py"
+      ]
+    },
+    {
+      "operation": "scraper.get.api-scraper-drafts-draft-id-pages-page-id-preview",
+      "method": "GET",
+      "path": "/api/scraper/drafts/{draft_id}/pages/{page_id}/preview",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_draft_page_preview",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_24_deep_route_coverage.py"
+      ]
+    },
+    {
+      "operation": "scraper.get.api-scraper-history",
+      "method": "GET",
+      "path": "/api/scraper/history",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:history",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_23_endpoint_contract_matrix.py"
+      ]
+    },
+    {
+      "operation": "scraper.get.api-scraper-history-history-id",
+      "method": "GET",
+      "path": "/api/scraper/history/{history_id}",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:history_item",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_23_endpoint_contract_matrix.py"
+      ]
+    },
+    {
+      "operation": "scraper.get.api-scraper-operations",
+      "method": "GET",
+      "path": "/api/scraper/operations",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_operations_dashboard",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_18_scraper_operations.py"
+      ]
+    },
+    {
+      "operation": "scraper.get.api-scraper-series-drafts",
+      "method": "GET",
+      "path": "/api/scraper/series-drafts",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_list_series_drafts",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_15_scraper_new_series.py"
+      ]
+    },
+    {
+      "operation": "scraper.get.api-scraper-series-drafts-chapters-chapter-id-pages-page-id-preview",
+      "method": "GET",
+      "path": "/api/scraper/series-drafts/chapters/{chapter_id}/pages/{page_id}/preview",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_series_draft_page_preview",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_15_scraper_new_series.py"
+      ]
+    },
+    {
+      "operation": "scraper.get.api-scraper-series-drafts-draft-id",
+      "method": "GET",
+      "path": "/api/scraper/series-drafts/{draft_id}",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_get_series_draft",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_15_scraper_new_series.py"
+      ]
+    },
+    {
+      "operation": "scraper.get.api-scraper-series-drafts-draft-id-chapters-chapter-id-pages",
+      "method": "GET",
+      "path": "/api/scraper/series-drafts/{draft_id}/chapters/{chapter_id}/pages",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_get_series_draft_chapter_pages",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_15_scraper_new_series.py"
+      ]
+    },
+    {
+      "operation": "scraper.get.api-scraper-series-drafts-draft-id-cover-preview",
+      "method": "GET",
+      "path": "/api/scraper/series-drafts/{draft_id}/cover/preview",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_series_cover_preview",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_15_scraper_new_series.py"
+      ]
+    },
+    {
+      "operation": "scraper.get.api-scraper-series-drafts-draft-id-events",
+      "method": "GET",
+      "path": "/api/scraper/series-drafts/{draft_id}/events",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_get_series_operation_events",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_24_deep_route_coverage.py"
+      ]
+    },
+    {
+      "operation": "scraper.get.api-scraper-series-drafts-draft-id-workflow-status",
+      "method": "GET",
+      "path": "/api/scraper/series-drafts/{draft_id}/workflow-status",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_get_series_publish_status",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_24_deep_route_coverage.py"
+      ]
+    },
+    {
+      "operation": "social.get.api-social-bookmarks",
+      "method": "GET",
+      "path": "/api/social/bookmarks",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "social",
+      "handler": "services/social_ts/src/routes.ts:GET /api/social/bookmarks",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_09_bookmarks.py"
+      ]
+    },
+    {
+      "operation": "social.get.api-social-bookmarks-seriesid-status",
+      "method": "GET",
+      "path": "/api/social/bookmarks/{seriesId}/status",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "social",
+      "handler": "services/social_ts/src/routes.ts:GET /api/social/bookmarks/{seriesId}/status",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        },
+        {
+          "kind": "android",
+          "name": "mreader-android"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_09_bookmarks.py"
+      ]
+    },
+    {
+      "operation": "social.get.api-social-comments",
+      "method": "GET",
+      "path": "/api/social/comments",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "social",
+      "handler": "services/social_ts/src/routes.ts:GET /api/social/comments",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_11_comments.py"
+      ]
+    },
+    {
+      "operation": "social.get.api-social-library",
+      "method": "GET",
+      "path": "/api/social/library",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "social",
+      "handler": "services/social_ts/src/routes.ts:GET /api/social/library",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_17_smart_library.py"
+      ]
+    },
+    {
+      "operation": "social.get.api-social-series-seriesid-metrics",
+      "method": "GET",
+      "path": "/api/social/series/{seriesId}/metrics",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "social",
+      "handler": "services/social_ts/src/routes.ts:GET /api/social/series/{seriesId}/metrics",
+      "version": "v1",
+      "authentication": {
+        "mode": "none",
+        "principal": "anonymous",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        },
+        {
+          "kind": "android",
+          "name": "mreader-android"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_09_bookmarks.py"
+      ]
+    },
+    {
+      "operation": "social.get.api-social-series-seriesid-viewer-state",
+      "method": "GET",
+      "path": "/api/social/series/{seriesId}/viewer-state",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "social",
+      "handler": "services/social_ts/src/routes.ts:GET /api/social/series/{seriesId}/viewer-state",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        },
+        {
+          "kind": "android",
+          "name": "mreader-android"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_24_deep_route_coverage.py"
+      ]
+    },
+    {
+      "operation": "social.get.api-social-subscriptions",
+      "method": "GET",
+      "path": "/api/social/subscriptions",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "social",
+      "handler": "services/social_ts/src/routes.ts:GET /api/social/subscriptions",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_10_subscriptions.py"
+      ]
+    },
+    {
+      "operation": "social.get.api-social-subscriptions-seriesid-status",
+      "method": "GET",
+      "path": "/api/social/subscriptions/{seriesId}/status",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "social",
+      "handler": "services/social_ts/src/routes.ts:GET /api/social/subscriptions/{seriesId}/status",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        },
+        {
+          "kind": "android",
+          "name": "mreader-android"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_10_subscriptions.py"
+      ]
+    },
+    {
+      "operation": "reader.get.api-token-chapter-seriesslug-chapterslug",
+      "method": "GET",
+      "path": "/api/token/chapter/{seriesSlug}/{chapterSlug}",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "reader",
+      "handler": "services/reader_go/internal/httpapi/api.go:a.chapterToken",
+      "version": "v1",
+      "authentication": {
+        "mode": "chapter-grant",
+        "principal": "chapter-reader",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "cache",
+          "name": "valkey"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_23_endpoint_contract_matrix.py"
+      ]
+    },
+    {
+      "operation": "media.get.api-upload-admin-chapters-chapter-id-download",
+      "method": "GET",
+      "path": "/api/upload/admin/chapters/{chapter_id}/download",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "media",
+      "handler": "services/image_service/app/routers/exports.py:download_chapter_export",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_23_endpoint_contract_matrix.py"
+      ]
+    },
+    {
+      "operation": "media.get.api-upload-admin-lifecycle-cleanup-jobs",
+      "method": "GET",
+      "path": "/api/upload/admin/lifecycle/cleanup-jobs",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "media",
+      "handler": "services/image_service/app/routers/lifecycle.py:cleanup_jobs",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_23_endpoint_contract_matrix.py"
+      ]
+    },
+    {
+      "operation": "media.get.api-upload-jobs-job-id",
+      "method": "GET",
+      "path": "/api/upload/jobs/{job_id}",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "media",
+      "handler": "services/image_service/app/routers/jobs.py:media_job_status",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_13_media.py"
+      ]
+    },
+    {
+      "operation": "reader.get.images",
+      "method": "GET",
+      "path": "/images/*",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "reader",
+      "handler": "services/reader_go/internal/httpapi/api.go:a.serveImage",
+      "version": "v1",
+      "authentication": {
+        "mode": "chapter-grant",
+        "principal": "chapter-reader",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "cache",
+          "name": "valkey"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        },
+        {
+          "kind": "android",
+          "name": "mreader-android"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01"
+      ],
+      "evidence": [
+        "tests/api/test_07_reader_images_tokens.py"
+      ]
+    },
+    {
+      "operation": "media.get.internal-v1-media-jobs-job-id",
+      "method": "GET",
+      "path": "/internal/v1/media/jobs/{job_id}",
+      "lifecycle": "current",
+      "access_plane": "internal",
+      "owner": "media",
+      "handler": "services/image_service/app/routers/jobs.py:internal_media_job_status",
+      "version": "v1",
+      "authentication": {
+        "mode": "workload-token",
+        "principal": "workload",
+        "required_role": null,
+        "credential_scope": "media-internal"
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "service",
+          "name": "mreader-workload"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/regression/test_p09_5_route_consumer_denial.py",
+        "tests/regression/test_p06_5_private_transport_auth.py"
+      ]
+    },
+    {
+      "operation": "scraper.patch.api-scraper-drafts-draft-id-chapter",
+      "method": "PATCH",
+      "path": "/api/scraper/drafts/{draft_id}/chapter",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_draft_update_chapter",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_14_scraper_existing_batch.py"
+      ]
+    },
+    {
+      "operation": "scraper.patch.api-scraper-series-drafts-chapters-chapter-id",
+      "method": "PATCH",
+      "path": "/api/scraper/series-drafts/chapters/{chapter_id}",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_update_series_draft_chapter",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_series_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_15_scraper_new_series.py"
+      ]
+    },
+    {
+      "operation": "scraper.patch.api-scraper-series-drafts-draft-id",
+      "method": "PATCH",
+      "path": "/api/scraper/series-drafts/{draft_id}",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_update_series_draft",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_series_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_15_scraper_new_series.py"
+      ]
+    },
+    {
+      "operation": "database-protection.post.api-admin-database-backups",
+      "method": "POST",
+      "path": "/api/admin/database/backups",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "database-protection",
+      "handler": "services/scraper_service/app/database_facade.py:admin_database_backup",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "database_operations",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_25_database_protection.py"
+      ]
+    },
+    {
+      "operation": "database-protection.post.api-admin-database-operations-operation-id-cancel",
+      "method": "POST",
+      "path": "/api/admin/database/operations/{operation_id}/cancel",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "database-protection",
+      "handler": "services/scraper_service/app/database_facade.py:admin_cancel_database_operation",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "database_operations",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_25_database_protection.py"
+      ]
+    },
+    {
+      "operation": "database-protection.post.api-admin-database-restore-drills",
+      "method": "POST",
+      "path": "/api/admin/database/restore-drills",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "database-protection",
+      "handler": "services/scraper_service/app/database_facade.py:admin_database_restore_drill",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "database_operations",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_25_database_protection.py"
+      ]
+    },
+    {
+      "operation": "database-protection.post.api-admin-database-restores",
+      "method": "POST",
+      "path": "/api/admin/database/restores",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "database-protection",
+      "handler": "services/scraper_service/app/database_facade.py:admin_database_restore",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "database_operations",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_25_database_protection.py"
+      ]
+    },
+    {
+      "operation": "database-protection.post.api-admin-database-snapshots",
+      "method": "POST",
+      "path": "/api/admin/database/snapshots",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "database-protection",
+      "handler": "services/scraper_service/app/database_facade.py:admin_database_snapshot",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "database_operations",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_25_database_protection.py"
+      ]
+    },
+    {
+      "operation": "auth.post.api-auth-login",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "auth",
+      "handler": "services/auth_service/app/routers/auth.py:login",
+      "version": "v1",
+      "authentication": {
+        "mode": "none",
+        "principal": "anonymous",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "cache",
+          "resource": "auth-sessions",
+          "actions": [
+            "write"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "cache",
+          "name": "valkey"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_03_auth_session_profile.py"
+      ]
+    },
+    {
+      "operation": "auth.post.api-auth-logout",
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "auth",
+      "handler": "services/auth_service/app/routers/auth.py:logout",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "cache",
+          "resource": "auth-sessions",
+          "actions": [
+            "write"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "cache",
+          "name": "valkey"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_03_auth_session_profile.py"
+      ]
+    },
+    {
+      "operation": "auth.post.api-auth-register",
+      "method": "POST",
+      "path": "/api/auth/register",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "auth",
+      "handler": "services/auth_service/app/routers/auth.py:register",
+      "version": "v1",
+      "authentication": {
+        "mode": "none",
+        "principal": "anonymous",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "users",
+          "actions": [
+            "insert"
+          ]
+        },
+        {
+          "kind": "cache",
+          "resource": "auth-sessions",
+          "actions": [
+            "write"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "cache",
+          "name": "valkey"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_02_auth_registration.py"
+      ]
+    },
+    {
+      "operation": "catalog.post.api-catalog-admin-announcements",
+      "method": "POST",
+      "path": "/api/catalog/admin/announcements",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.createAnnouncement",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "announcements",
+          "actions": [
+            "insert"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_04_catalog_reads.py"
+      ]
+    },
+    {
+      "operation": "catalog.post.api-catalog-admin-editor-picks",
+      "method": "POST",
+      "path": "/api/catalog/admin/editor-picks",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.createEditorPick",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "editor_picks",
+          "actions": [
+            "insert"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_04_catalog_reads.py"
+      ]
+    },
+    {
+      "operation": "catalog.post.api-catalog-series",
+      "method": "POST",
+      "path": "/api/catalog/series",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.createSeries",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "series",
+          "actions": [
+            "insert"
+          ]
+        },
+        {
+          "kind": "postgres",
+          "resource": "series_genres",
+          "actions": [
+            "delete",
+            "insert"
+          ]
+        },
+        {
+          "kind": "postgres",
+          "resource": "series_tags",
+          "actions": [
+            "delete",
+            "insert"
+          ]
+        },
+        {
+          "kind": "postgres",
+          "resource": "genres",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        },
+        {
+          "kind": "postgres",
+          "resource": "tags",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_04_catalog_reads.py"
+      ]
+    },
+    {
+      "operation": "catalog.post.api-catalog-series-seriesid-chapters",
+      "method": "POST",
+      "path": "/api/catalog/series/{seriesID}/chapters",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.createChapter",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "chapters",
+          "actions": [
+            "insert"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_04_catalog_reads.py"
+      ]
+    },
+    {
+      "operation": "catalog.post.api-catalog-series-seriesid-chapters-chapterid-publish",
+      "method": "POST",
+      "path": "/api/catalog/series/{seriesID}/chapters/{chapterID}/publish",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.publishChapter",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "chapters",
+          "actions": [
+            "insert"
+          ]
+        },
+        {
+          "kind": "postgres",
+          "resource": "catalog_mutation_receipts",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_05_catalog_admin_writes.py"
+      ]
+    },
+    {
+      "operation": "notifications.post.api-notifications-admin-retention-sweep",
+      "method": "POST",
+      "path": "/api/notifications/admin/retention/sweep",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "notifications",
+      "handler": "services/social_ts/src/routes.ts:POST /api/notifications/admin/retention/sweep",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "notifications",
+          "actions": [
+            "update",
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_23_endpoint_contract_matrix.py"
+      ]
+    },
+    {
+      "operation": "notifications.post.api-notifications-read-all",
+      "method": "POST",
+      "path": "/api/notifications/read-all",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "notifications",
+      "handler": "services/social_ts/src/routes.ts:POST /api/notifications/read-all",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "notifications",
+          "actions": [
+            "update",
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_12_notifications.py"
+      ]
+    },
+    {
+      "operation": "notifications.post.api-notifications-notificationid-read",
+      "method": "POST",
+      "path": "/api/notifications/{notificationId}/read",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "notifications",
+      "handler": "services/social_ts/src/routes.ts:POST /api/notifications/{notificationId}/read",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "notifications",
+          "actions": [
+            "update",
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        },
+        {
+          "kind": "android",
+          "name": "mreader-android"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_12_notifications.py"
+      ]
+    },
+    {
+      "operation": "progress.post.api-progress-seriesslug-chapterslug-commit",
+      "method": "POST",
+      "path": "/api/progress/{seriesSlug}/{chapterSlug}/commit",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "progress",
+      "handler": "services/progress_go/internal/httpapi/api.go:a.commitProgress",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "reading_progress",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        },
+        {
+          "kind": "postgres",
+          "resource": "chapter_reads",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        },
+        {
+          "kind": "android",
+          "name": "mreader-android"
+        }
+      ],
+      "events": [
+        {
+          "direction": "publish",
+          "name": "progress.updated"
+        }
+      ],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_26_reading_commands.py"
+      ]
+    },
+    {
+      "operation": "progress.post.api-progress-seriesslug-chapterslug-open",
+      "method": "POST",
+      "path": "/api/progress/{seriesSlug}/{chapterSlug}/open",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "progress",
+      "handler": "services/progress_go/internal/httpapi/api.go:a.recordOpen",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "reading_progress",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        },
+        {
+          "kind": "postgres",
+          "resource": "chapter_reads",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        },
+        {
+          "kind": "android",
+          "name": "mreader-android"
+        }
+      ],
+      "events": [
+        {
+          "direction": "publish",
+          "name": "progress.updated"
+        }
+      ],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_26_reading_commands.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-batches",
+      "method": "POST",
+      "path": "/api/scraper/batches",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_create_batch",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_batch_items",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_14_scraper_existing_batch.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-batches-items-item-id-resolve",
+      "method": "POST",
+      "path": "/api/scraper/batches/items/{item_id}/resolve",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_batch_resolve_item",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_batch_items",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_14_scraper_existing_batch.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-batches-items-item-id-retry",
+      "method": "POST",
+      "path": "/api/scraper/batches/items/{item_id}/retry",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_batch_retry_item",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_batch_items",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_14_scraper_existing_batch.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-diagnose",
+      "method": "POST",
+      "path": "/api/scraper/diagnose",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_diagnose_source",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "ingestion_operations",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_23_endpoint_contract_matrix.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-discover-chapter",
+      "method": "POST",
+      "path": "/api/scraper/discover/chapter",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:discover_manga_chapter",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "ingestion_operations",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_23_endpoint_contract_matrix.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-drafts-chapter",
+      "method": "POST",
+      "path": "/api/scraper/drafts/chapter",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:create_scraper_chapter_draft",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_14_scraper_existing_batch.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-drafts-draft-id-pages-from-url",
+      "method": "POST",
+      "path": "/api/scraper/drafts/{draft_id}/pages/from-url",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_draft_add_page_url",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        },
+        {
+          "kind": "filesystem",
+          "resource": "scraper-staging",
+          "actions": [
+            "write"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "filesystem",
+          "name": "local-staging"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_24_deep_route_coverage.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-drafts-draft-id-pages-reorder",
+      "method": "POST",
+      "path": "/api/scraper/drafts/{draft_id}/pages/reorder",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_draft_reorder_pages",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        },
+        {
+          "kind": "filesystem",
+          "resource": "scraper-staging",
+          "actions": [
+            "write"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "filesystem",
+          "name": "local-staging"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_24_deep_route_coverage.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-drafts-draft-id-pages-retry-failed",
+      "method": "POST",
+      "path": "/api/scraper/drafts/{draft_id}/pages/retry-failed",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_draft_retry_failed_pages",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        },
+        {
+          "kind": "filesystem",
+          "resource": "scraper-staging",
+          "actions": [
+            "write"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "filesystem",
+          "name": "local-staging"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_24_deep_route_coverage.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-drafts-draft-id-pages-upload",
+      "method": "POST",
+      "path": "/api/scraper/drafts/{draft_id}/pages/upload",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_draft_add_page_upload",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        },
+        {
+          "kind": "filesystem",
+          "resource": "scraper-staging",
+          "actions": [
+            "write"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "filesystem",
+          "name": "local-staging"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_24_deep_route_coverage.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-drafts-draft-id-publish",
+      "method": "POST",
+      "path": "/api/scraper/drafts/{draft_id}/publish",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/existing_series_publication_routes.py:existing_series_draft_publish",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_24_deep_route_coverage.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-ingest-chapter",
+      "method": "POST",
+      "path": "/api/scraper/ingest/chapter",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:ingest_manga_chapter",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "ingestion_operations",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_23_endpoint_contract_matrix.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-operations-draft-id-acknowledge",
+      "method": "POST",
+      "path": "/api/scraper/operations/{draft_id}/acknowledge",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_acknowledge_operation",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "ingestion_operations",
+          "actions": [
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_18_scraper_operations.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-operations-draft-id-retry-discovery",
+      "method": "POST",
+      "path": "/api/scraper/operations/{draft_id}/retry-discovery",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_retry_discovery_operation",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "ingestion_operations",
+          "actions": [
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_24_deep_route_coverage.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-operations-draft-id-unacknowledge",
+      "method": "POST",
+      "path": "/api/scraper/operations/{draft_id}/unacknowledge",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_unacknowledge_operation",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "ingestion_operations",
+          "actions": [
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_24_deep_route_coverage.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-scrape",
+      "method": "POST",
+      "path": "/api/scraper/scrape",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scrape",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "ingestion_operations",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        },
+        {
+          "kind": "postgres",
+          "resource": "scraper_history",
+          "actions": [
+            "insert"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_14_scraper_existing_batch.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-series-drafts-chapters-chapter-id-pages-from-url",
+      "method": "POST",
+      "path": "/api/scraper/series-drafts/chapters/{chapter_id}/pages/from-url",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_series_draft_add_page_url",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_series_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        },
+        {
+          "kind": "filesystem",
+          "resource": "scraper-staging",
+          "actions": [
+            "write"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "filesystem",
+          "name": "local-staging"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_24_deep_route_coverage.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-series-drafts-chapters-chapter-id-pages-reorder",
+      "method": "POST",
+      "path": "/api/scraper/series-drafts/chapters/{chapter_id}/pages/reorder",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_series_draft_reorder_pages",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_series_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        },
+        {
+          "kind": "filesystem",
+          "resource": "scraper-staging",
+          "actions": [
+            "write"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "filesystem",
+          "name": "local-staging"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_15_scraper_new_series.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-series-drafts-chapters-chapter-id-pages-upload",
+      "method": "POST",
+      "path": "/api/scraper/series-drafts/chapters/{chapter_id}/pages/upload",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_series_draft_add_page_upload",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_series_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        },
+        {
+          "kind": "filesystem",
+          "resource": "scraper-staging",
+          "actions": [
+            "write"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "filesystem",
+          "name": "local-staging"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_15_scraper_new_series.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-series-drafts-discover",
+      "method": "POST",
+      "path": "/api/scraper/series-drafts/discover",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_discover_new_series",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_series_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_15_scraper_new_series.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-series-drafts-draft-id-chapters-clear-titles",
+      "method": "POST",
+      "path": "/api/scraper/series-drafts/{draft_id}/chapters/clear-titles",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_clear_series_draft_chapter_titles",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_series_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_15_scraper_new_series.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-series-drafts-draft-id-chapters-chapter-id-publish",
+      "method": "POST",
+      "path": "/api/scraper/series-drafts/{draft_id}/chapters/{chapter_id}/publish",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_publish_one_series_draft_chapter",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_series_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_15_scraper_new_series.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-series-drafts-draft-id-cover-upload",
+      "method": "POST",
+      "path": "/api/scraper/series-drafts/{draft_id}/cover/upload",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_series_cover_upload",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_series_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        },
+        {
+          "kind": "filesystem",
+          "resource": "scraper-staging",
+          "actions": [
+            "write"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "filesystem",
+          "name": "local-staging"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_15_scraper_new_series.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-series-drafts-draft-id-publish",
+      "method": "POST",
+      "path": "/api/scraper/series-drafts/{draft_id}/publish",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_publish_series_draft",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_series_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_15_scraper_new_series.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-series-drafts-draft-id-publish-cancel",
+      "method": "POST",
+      "path": "/api/scraper/series-drafts/{draft_id}/publish/cancel",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_cancel_series_publish",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_series_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_24_deep_route_coverage.py"
+      ]
+    },
+    {
+      "operation": "scraper.post.api-scraper-series-drafts-draft-id-stage",
+      "method": "POST",
+      "path": "/api/scraper/series-drafts/{draft_id}/stage",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_stage_series_draft_chapters",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_series_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        },
+        {
+          "kind": "filesystem",
+          "resource": "scraper-staging",
+          "actions": [
+            "write"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "filesystem",
+          "name": "local-staging"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_15_scraper_new_series.py"
+      ]
+    },
+    {
+      "operation": "social.post.api-social-bookmarks-seriesid",
+      "method": "POST",
+      "path": "/api/social/bookmarks/{seriesId}",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "social",
+      "handler": "services/social_ts/src/routes.ts:POST /api/social/bookmarks/{seriesId}",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "bookmarks",
+          "actions": [
+            "insert"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_09_bookmarks.py"
+      ]
+    },
+    {
+      "operation": "social.post.api-social-comments",
+      "method": "POST",
+      "path": "/api/social/comments",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "social",
+      "handler": "services/social_ts/src/routes.ts:POST /api/social/comments",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "comments",
+          "actions": [
+            "insert"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_11_comments.py"
+      ]
+    },
+    {
+      "operation": "social.post.api-social-series-metrics-batch",
+      "method": "POST",
+      "path": "/api/social/series/metrics-batch",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "social",
+      "handler": "services/social_ts/src/routes.ts:POST /api/social/series/metrics-batch",
+      "version": "v1",
+      "authentication": {
+        "mode": "none",
+        "principal": "anonymous",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_09_bookmarks.py"
+      ]
+    },
+    {
+      "operation": "social.post.api-social-subscriptions-seriesid",
+      "method": "POST",
+      "path": "/api/social/subscriptions/{seriesId}",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "social",
+      "handler": "services/social_ts/src/routes.ts:POST /api/social/subscriptions/{seriesId}",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "subscriptions",
+          "actions": [
+            "insert"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_10_subscriptions.py"
+      ]
+    },
+    {
+      "operation": "reader.post.api-token-cloudfront-clear",
+      "method": "POST",
+      "path": "/api/token/cloudfront/clear",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "reader",
+      "handler": "services/reader_go/internal/httpapi/api.go:a.clearCloudFrontCookies",
+      "version": "v1",
+      "authentication": {
+        "mode": "none",
+        "principal": "anonymous",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "cache",
+          "resource": "reader-cloudfront-cookies",
+          "actions": [
+            "delete"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "cache",
+          "name": "valkey"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_23_endpoint_contract_matrix.py"
+      ]
+    },
+    {
+      "operation": "media.post.api-upload-admin-lifecycle-cleanup-jobs-job-id-retry",
+      "method": "POST",
+      "path": "/api/upload/admin/lifecycle/cleanup-jobs/{job_id}/retry",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "media",
+      "handler": "services/image_service/app/routers/lifecycle.py:retry_cleanup_job",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "lifecycle_cleanup_jobs",
+          "actions": [
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_23_endpoint_contract_matrix.py"
+      ]
+    },
+    {
+      "operation": "media.post.api-upload-jobs-chapter-series-slug-chapter-slug",
+      "method": "POST",
+      "path": "/api/upload/jobs/chapter/{series_slug}/{chapter_slug}",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "media",
+      "handler": "services/image_service/app/routers/jobs.py:submit_chapter_job",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "media_operations",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        },
+        {
+          "kind": "seaweedfs",
+          "resource": "media-objects",
+          "actions": [
+            "create"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "seaweedfs",
+          "name": "nas-media"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [
+        {
+          "direction": "publish",
+          "name": "media.uploaded"
+        }
+      ],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_13_media.py"
+      ]
+    },
+    {
+      "operation": "media.post.api-upload-jobs-thumbnail-series-slug",
+      "method": "POST",
+      "path": "/api/upload/jobs/thumbnail/{series_slug}",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "media",
+      "handler": "services/image_service/app/routers/jobs.py:submit_thumbnail_job",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "media_operations",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        },
+        {
+          "kind": "seaweedfs",
+          "resource": "media-objects",
+          "actions": [
+            "create"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "seaweedfs",
+          "name": "nas-media"
+        }
+      ],
+      "consumers": [],
+      "events": [
+        {
+          "direction": "publish",
+          "name": "media.uploaded"
+        }
+      ],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_13_media.py"
+      ]
+    },
+    {
+      "operation": "media.post.api-upload-series-series-slug-thumbnail",
+      "method": "POST",
+      "path": "/api/upload/series/{series_slug}/thumbnail",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "media",
+      "handler": "services/image_service/app/routers/upload.py:upload_series_thumbnail",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "media_operations",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        },
+        {
+          "kind": "seaweedfs",
+          "resource": "media-objects",
+          "actions": [
+            "create"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "seaweedfs",
+          "name": "nas-media"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [
+        {
+          "direction": "publish",
+          "name": "media.uploaded"
+        }
+      ],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_13_media.py"
+      ]
+    },
+    {
+      "operation": "catalog.post.internal-v1-catalog-publications",
+      "method": "POST",
+      "path": "/internal/v1/catalog/publications",
+      "lifecycle": "current",
+      "access_plane": "internal",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.commitPublication",
+      "version": "v1",
+      "authentication": {
+        "mode": "workload-token",
+        "principal": "workload",
+        "required_role": null,
+        "credential_scope": "catalog-internal"
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "catalog_mutation_receipts",
+          "actions": [
+            "insert"
+          ]
+        },
+        {
+          "kind": "postgres",
+          "resource": "catalog_mutation_receipts",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "service",
+          "name": "mreader-workload"
+        }
+      ],
+      "events": [
+        {
+          "direction": "publish",
+          "name": "chapter.published"
+        },
+        {
+          "direction": "publish",
+          "name": "series.updated"
+        }
+      ],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/regression/test_catalog_publication_http_source.py"
+      ]
+    },
+    {
+      "operation": "catalog.post.internal-v1-catalog-series",
+      "method": "POST",
+      "path": "/internal/v1/catalog/series",
+      "lifecycle": "current",
+      "access_plane": "internal",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.createInternalSeries",
+      "version": "v1",
+      "authentication": {
+        "mode": "workload-token",
+        "principal": "workload",
+        "required_role": null,
+        "credential_scope": "catalog-internal"
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "series",
+          "actions": [
+            "insert"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "service",
+          "name": "mreader-workload"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/regression/test_p06_4_series_ownership_cutover.py"
+      ]
+    },
+    {
+      "operation": "media.post.internal-v1-media-jobs-chapter-series-slug-chapter-slug",
+      "method": "POST",
+      "path": "/internal/v1/media/jobs/chapter/{series_slug}/{chapter_slug}",
+      "lifecycle": "current",
+      "access_plane": "internal",
+      "owner": "media",
+      "handler": "services/image_service/app/routers/jobs.py:internal_submit_chapter_job",
+      "version": "v1",
+      "authentication": {
+        "mode": "workload-token",
+        "principal": "workload",
+        "required_role": null,
+        "credential_scope": "media-internal"
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "media_operations",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        },
+        {
+          "kind": "seaweedfs",
+          "resource": "media-objects",
+          "actions": [
+            "create"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "seaweedfs",
+          "name": "nas-media"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "service",
+          "name": "mreader-workload"
+        }
+      ],
+      "events": [
+        {
+          "direction": "publish",
+          "name": "media.uploaded"
+        }
+      ],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/regression/test_p09_5_route_consumer_denial.py",
+        "tests/regression/test_p06_5_private_transport_auth.py"
+      ]
+    },
+    {
+      "operation": "media.post.internal-v1-media-jobs-thumbnail-series-slug",
+      "method": "POST",
+      "path": "/internal/v1/media/jobs/thumbnail/{series_slug}",
+      "lifecycle": "current",
+      "access_plane": "internal",
+      "owner": "media",
+      "handler": "services/image_service/app/routers/jobs.py:internal_submit_thumbnail_job",
+      "version": "v1",
+      "authentication": {
+        "mode": "workload-token",
+        "principal": "workload",
+        "required_role": null,
+        "credential_scope": "media-internal"
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "media_operations",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        },
+        {
+          "kind": "seaweedfs",
+          "resource": "media-objects",
+          "actions": [
+            "create"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "seaweedfs",
+          "name": "nas-media"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "service",
+          "name": "mreader-workload"
+        }
+      ],
+      "events": [
+        {
+          "direction": "publish",
+          "name": "media.uploaded"
+        }
+      ],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/regression/test_p09_5_route_consumer_denial.py",
+        "tests/regression/test_p06_5_private_transport_auth.py"
+      ]
+    },
+    {
+      "operation": "auth.put.api-auth-profile",
+      "method": "PUT",
+      "path": "/api/auth/profile",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "auth",
+      "handler": "services/auth_service/app/routers/auth.py:update_profile",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "users",
+          "actions": [
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "cache",
+          "name": "valkey"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_01_health_gateway.py"
+      ]
+    },
+    {
+      "operation": "catalog.put.api-catalog-admin-announcements-id",
+      "method": "PUT",
+      "path": "/api/catalog/admin/announcements/{id}",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.updateAnnouncement",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "announcements",
+          "actions": [
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_04_catalog_reads.py"
+      ]
+    },
+    {
+      "operation": "catalog.put.api-catalog-admin-editor-picks-id",
+      "method": "PUT",
+      "path": "/api/catalog/admin/editor-picks/{id}",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.updateEditorPick",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "editor_picks",
+          "actions": [
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_04_catalog_reads.py"
+      ]
+    },
+    {
+      "operation": "catalog.put.api-catalog-series-seriesid",
+      "method": "PUT",
+      "path": "/api/catalog/series/{seriesID}",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.updateSeries",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "series",
+          "actions": [
+            "update"
+          ]
+        },
+        {
+          "kind": "postgres",
+          "resource": "series_genres",
+          "actions": [
+            "delete",
+            "insert"
+          ]
+        },
+        {
+          "kind": "postgres",
+          "resource": "series_tags",
+          "actions": [
+            "delete",
+            "insert"
+          ]
+        },
+        {
+          "kind": "postgres",
+          "resource": "genres",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        },
+        {
+          "kind": "postgres",
+          "resource": "tags",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [
+        {
+          "direction": "publish",
+          "name": "series.updated"
+        }
+      ],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_04_catalog_reads.py"
+      ]
+    },
+    {
+      "operation": "catalog.put.api-catalog-series-seriesid-chapters-chapterid",
+      "method": "PUT",
+      "path": "/api/catalog/series/{seriesID}/chapters/{chapterID}",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.updateChapter",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "chapters",
+          "actions": [
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_04_catalog_reads.py"
+      ]
+    },
+    {
+      "operation": "scraper.put.api-scraper-drafts-draft-id-pages-page-id-from-url",
+      "method": "PUT",
+      "path": "/api/scraper/drafts/{draft_id}/pages/{page_id}/from-url",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_draft_replace_page_url",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        },
+        {
+          "kind": "filesystem",
+          "resource": "scraper-staging",
+          "actions": [
+            "write"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "filesystem",
+          "name": "local-staging"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_24_deep_route_coverage.py"
+      ]
+    },
+    {
+      "operation": "scraper.put.api-scraper-series-drafts-draft-id-cover-from-url",
+      "method": "PUT",
+      "path": "/api/scraper/series-drafts/{draft_id}/cover/from-url",
+      "lifecycle": "current",
+      "access_plane": "admin",
+      "owner": "scraper",
+      "handler": "services/scraper_service/app/main.py:scraper_series_cover_url",
+      "version": "v1",
+      "authentication": {
+        "mode": "admin-session",
+        "principal": "admin",
+        "required_role": "admin",
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "scraper_series_drafts",
+          "actions": [
+            "insert",
+            "update",
+            "delete"
+          ]
+        },
+        {
+          "kind": "filesystem",
+          "resource": "scraper-staging",
+          "actions": [
+            "write"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        },
+        {
+          "kind": "filesystem",
+          "name": "local-staging"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "admin-web",
+          "name": "admin-frontend"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_24_deep_route_coverage.py"
+      ]
+    },
+    {
+      "operation": "social.put.api-social-series-seriesid-rating",
+      "method": "PUT",
+      "path": "/api/social/series/{seriesId}/rating",
+      "lifecycle": "current",
+      "access_plane": "both",
+      "owner": "social",
+      "handler": "services/social_ts/src/routes.ts:PUT /api/social/series/{seriesId}/rating",
+      "version": "v1",
+      "authentication": {
+        "mode": "session",
+        "principal": "user",
+        "required_role": null,
+        "credential_scope": null
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "series_ratings",
+          "actions": [
+            "insert",
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "web",
+          "name": "frontend"
+        },
+        {
+          "kind": "android",
+          "name": "mreader-android"
+        }
+      ],
+      "events": [],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/api/test_04_catalog_reads.py"
+      ]
+    },
+    {
+      "operation": "catalog.put.internal-v1-catalog-series-seriesid-cover",
+      "method": "PUT",
+      "path": "/internal/v1/catalog/series/{seriesID}/cover",
+      "lifecycle": "current",
+      "access_plane": "internal",
+      "owner": "catalog",
+      "handler": "services/catalog_go/internal/httpapi/api.go:a.setInternalSeriesCover",
+      "version": "v1",
+      "authentication": {
+        "mode": "workload-token",
+        "principal": "workload",
+        "required_role": null,
+        "credential_scope": "catalog-internal"
+      },
+      "permitted_writes": [
+        {
+          "kind": "postgres",
+          "resource": "series",
+          "actions": [
+            "update"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "kind": "postgres",
+          "name": "primary"
+        }
+      ],
+      "consumers": [
+        {
+          "kind": "service",
+          "name": "mreader-workload"
+        }
+      ],
+      "events": [
+        {
+          "direction": "publish",
+          "name": "series.updated"
+        }
+      ],
+      "acceptance_test_ids": [
+        "API-01",
+        "OWN-01"
+      ],
+      "evidence": [
+        "tests/regression/test_p06_4_series_ownership_cutover.py"
+      ]
+    }
+  ]
+}

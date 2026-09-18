@@ -1,0 +1,14 @@
+path	git_blob_sha1
+contracts/catalog/v1/README.md	47df61a270bdbe126db3e9f26a8d50a3aa924498
+contracts/catalog/v1/catalog-receipt.schema.json	206c810c308d75e6266c642470813c74c50ff606
+contracts/catalog/v1/fixtures/catalog-receipt.json	2200e2fd4553a76d51e96607b7854ae165a0e46a
+contracts/catalog/v1/fixtures/digest-vectors.json	11d91cd8c9a6760ae9ae5ac5a0bf4b4d20adc8cf
+contracts/catalog/v1/fixtures/media-receipt.json	dc23058292d814b3418628228f503282ca183cd3
+contracts/catalog/v1/fixtures/publication.json	23e3341acef07fe92dd6c96c5c58cdf2b7932ffc
+contracts/catalog/v1/media-receipt.schema.json	3a571380bf1fa6b56da7de4189b37c498b3b27f7
+contracts/catalog/v1/publication.schema.json	00eabb1860276933a9d1d5bf480e9fe6908b7101
+contracts/catalog/v1/types.schema.json	62839e082cb8a3c31de782af3fbe04f35f083272
+shared/shared/catalog_publication_contract.py	e2b5f61eace0a05e2b49dcf2f2e0e5354e49edd0
+tests/regression/test_catalog_publication_contract.py	936b4f0c840954ac5be16bb184fdb20631a2552a
+docs/qualification/RC485-CATALOG-PUBLICATION-CONTRACT.md	ec97de7d1bc6776baabcd370778f81d68805632b
+docs/superpowers/plans/2026-09-14-catalog-publication-contract.md	b9c644113733afa393f6e6c7c3195b9a93d48125

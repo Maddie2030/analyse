@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: admin-plane-resource-budget
+  namespace: mreader-admin
+spec:
+  hard:
+    limits.memory: 6656Mi
+    requests.memory: 3Gi
+    pods: "20"

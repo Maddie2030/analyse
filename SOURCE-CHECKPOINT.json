@@ -1,0 +1,31 @@
+{
+  "package_id": "mreader-rc485-milestone-1",
+  "kind": "application-source-test-checkpoint",
+  "source_commit": "9a2415002983ea79915d7fb0a8a6cd2d83150fc0",
+  "baseline_commit": "7d6b74c",
+  "runtime_version_labels": "1.3.0-rc4.84",
+  "created_at": "2026-09-14T06:50:09.427921+00:00",
+  "major_blocker_resolved": "Startup guards and adoption still required the retired backup-spool owner and old retention defaults.",
+  "included": "Full committed application source, both clients, services, migrations, deployment configuration, documentation and tests.",
+  "verification": {
+    "web_reading_behavior": 31,
+    "migration_runner_behavior": 6,
+    "preupgrade_behavior": 5,
+    "recovery_operator_behavior": 8,
+    "startup_source_and_fixture_checks": 14
+  },
+  "blocked": [
+    "actual PostgreSQL migration/API/restore tests",
+    "Go and TypeScript builds",
+    "Android Kotlin/build/device tests",
+    "browser/deployment/load qualification"
+  ],
+  "remaining": [
+    "Catalog publication and lifecycle ownership/receipts/grants",
+    "private recovery download transport and namespace secret isolation",
+    "restore fencing/pins/reconciliation"
+  ],
+  "compiled_apk": false,
+  "prebuilt_images": false,
+  "qualified_final_release": false
+}

@@ -1,0 +1,15 @@
+# event_type\ttopic\tversion\tpartition_key\tpayload_schema
+chapter.published	chapter.published	1	series_id	v1/chapter.published.schema.json
+chapter.published	chapter.published	2	series_id	v2/chapter.published.schema.json
+chapter.created	chapter.created	1	series_id	v1/chapter.created.schema.json
+media.uploaded	media.uploaded	1	series_id_or_upload_id	v1/media.uploaded.schema.json
+media.processed	media.processed	1	series_id_or_job_id	v1/media.processed.schema.json
+series.updated	series.updated	1	series_id	v1/series.updated.schema.json
+notification.requested	notification.requested	1	recipient_user_id	v1/notification.requested.schema.json
+notification.batch.created	notification.batch.created	1	source_event_id	v1/notification.batch.created.schema.json
+subscription.created	subscription.created	1	series_id	v1/subscription.created.schema.json
+progress.updated	progress.updated	1	user_id:series_id	v1/progress.updated.schema.json
+progress.updated	progress.updated	2	user_id:series_id	v2/progress.updated.schema.json
+cache.invalidate	cache.invalidate	1	entity_type:entity_id	v1/cache.invalidate.schema.json
+account.deletion.requested	account.deletion.requested	1	user_id	v1/account.deletion.requested.schema.json
+audit.created	audit.created	1	actor_or_entity_id	v1/audit.created.schema.json

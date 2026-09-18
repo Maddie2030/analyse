@@ -1,0 +1,32 @@
+# Notification delivery is event-driven. HTTP QueueLength includes unacknowledged
+# deliveries so a notification pod cannot be scaled away while it owns work.
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: notification-worker
+  namespace: mreader-user
+  labels:
+    mreader.io/plane: user
+spec:
+  scaleTargetRef:
+    name: notification-worker
+    envSourceContainerName: notification-worker
+  pollingInterval: 15
+  cooldownPeriod: 60
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  fallback:
+    failureThreshold: 3
+    replicas: 1
+  triggers:
+  - type: rabbitmq
+    metadata:
+      hostFromEnv: KEDA_RABBITMQ_HTTP_URL
+      usernameFromEnv: RABBITMQ_USER
+      passwordFromEnv: RABBITMQ_PASSWORD
+      protocol: http
+      queueName: mreader.notification.worker
+      mode: QueueLength
+      value: '20'
+      excludeUnacknowledged: 'false'
+      timeout: '3000'

@@ -1,0 +1,19 @@
+MReader RC4.84 - Windows extraction note
+========================================
+
+Use a short extraction path on Windows so Docker/Git Bash/Explorer never approach
+legacy MAX_PATH limits.
+
+Recommended locations:
+
+    C:\mreader\
+
+or:
+
+    C:\src\mreader-rc484\
+
+After extraction, keep the repository root shallow. Do not repeatedly extract the
+archive into another copy of itself.
+
+No MReader code depends on the repository directory name; scripts resolve the root
+relative to their own location.

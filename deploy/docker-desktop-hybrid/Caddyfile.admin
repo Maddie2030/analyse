@@ -1,0 +1,164 @@
+{$CADDY_SITE_ADDRESS} {
+    encode zstd gzip
+
+    log {
+        output stdout
+        format json
+    }
+
+    request_body {
+        max_size 512MB
+    }
+
+    @internal path /internal /internal/*
+    respond @internal 404
+
+    # Explicitly fence retired API families before broader route matchers.
+    # These paths must stay unavailable even if a downstream service later
+    # reintroduces a legacy handler or catch-all.
+    @retiredApi path /api/token/page /api/token/page/* /api/scraper/admin/backups /api/scraper/admin/backups/* /api/scraper/admin/database /api/scraper/admin/database/*
+    handle @retiredApi {
+        respond "not found" 404
+    }
+
+    @healthz path /healthz
+    handle @healthz {
+        respond "ok" 200
+    }
+
+    # Database protection is an admin facade even though the current implementation
+    # remains in the scraper-service deployment. Keep its public contract independent
+    # from the scraper namespace and never expose the host-local recovery bridge.
+    @databaseAdmin path /api/admin/database /api/admin/database/*
+    handle @databaseAdmin {
+        reverse_proxy scraper-service:8000 {
+            header_down X-MReader-Owner database-protection
+            lb_retries 0
+        }
+    }
+
+    # Admin-only ingestion/write services are local to mreader-admin.
+    @scraper path /api/scraper /api/scraper/*
+    handle @scraper {
+        reverse_proxy scraper-service:8000 {
+            header_down X-MReader-Owner scraper
+            lb_retries 0
+        }
+    }
+
+    @upload path /api/upload /api/upload/*
+    handle @upload {
+        reverse_proxy image-service:8000 {
+            header_down X-MReader-Owner media
+            lb_retries 0
+        }
+    }
+
+    @catalogAdmin path /api/catalog/admin /api/catalog/admin/*
+    handle @catalogAdmin {
+        reverse_proxy catalog-admin:8080 {
+            header_down X-MReader-Owner catalog
+            header_up X-MReader-Catalog-Route admin-writer
+            lb_retries 1
+            lb_try_duration 2s
+        }
+    }
+
+    @catalogWrite {
+        path /api/catalog /api/catalog/*
+        method POST PUT PATCH DELETE
+    }
+    handle @catalogWrite {
+        reverse_proxy catalog-admin:8080 {
+            header_down X-MReader-Owner catalog
+            header_up X-MReader-Catalog-Route admin-writer
+            lb_retries 1
+            lb_try_duration 2s
+        }
+    }
+
+    @catalogRead path /api/catalog /api/catalog/*
+    handle @catalogRead {
+        reverse_proxy catalog-go.mreader-user.svc.cluster.local:8080 {
+            header_down X-MReader-Owner catalog
+            header_up X-MReader-Catalog-Route user-read-through-admin
+            lb_retries 1
+            lb_try_duration 2s
+        }
+    }
+
+    @auth path /api/auth /api/auth/*
+    handle @auth {
+        reverse_proxy auth-admin:8000 {
+            header_down X-MReader-Owner auth
+            lb_retries 3
+            lb_try_duration 5s
+        }
+    }
+
+    @mobile path /api/mobile /api/mobile/*
+    handle @mobile {
+        reverse_proxy reader-go.mreader-user.svc.cluster.local:8080 {
+            header_down X-MReader-Owner reader
+            header_up X-MReader-Reader-Route mobile-adapter-v1
+            lb_retries 1
+            lb_try_duration 2s
+        }
+    }
+
+    @reader path /api/reader /api/reader/*
+    handle @reader {
+        reverse_proxy reader-go.mreader-user.svc.cluster.local:8080 {
+            header_down X-MReader-Owner reader
+        }
+    }
+
+    @token path /api/token /api/token/*
+    handle @token {
+        reverse_proxy reader-go.mreader-user.svc.cluster.local:8080 {
+            header_down X-MReader-Owner reader
+        }
+    }
+
+    @realtime path /api/realtime /api/realtime/*
+    handle @realtime {
+        reverse_proxy realtime-go.mreader-user.svc.cluster.local:8080 {
+            header_down X-MReader-Owner realtime
+        }
+    }
+
+    @progress path /api/progress /api/progress/*
+    handle @progress {
+        reverse_proxy progress-go.mreader-user.svc.cluster.local:8080 {
+            header_down X-MReader-Owner progress
+        }
+    }
+
+    @social path /api/social /api/social/*
+    handle @social {
+        reverse_proxy social-ts.mreader-user.svc.cluster.local:8080 {
+            header_down X-MReader-Owner social
+        }
+    }
+
+    @notifications path /api/notifications /api/notifications/*
+    handle @notifications {
+        reverse_proxy social-ts.mreader-user.svc.cluster.local:8080 {
+            header_down X-MReader-Owner notifications
+        }
+    }
+
+    @images path /images /images/*
+    handle @images {
+        reverse_proxy host.docker.internal:18081 {
+            header_down X-MReader-Owner reader
+            header_up X-MReader-Image-Route docker-compose-edge-cache
+            lb_retries 1
+            lb_try_duration 2s
+        }
+    }
+
+    handle {
+        reverse_proxy admin-frontend:80
+    }
+}

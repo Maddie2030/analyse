@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "series.updated v1 payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["series_id", "series_slug", "changed_fields", "updated_at"],
+  "properties": {
+    "series_id": {"type": "string", "format": "uuid"},
+    "series_slug": {"type": "string", "minLength": 1},
+    "changed_fields": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1, "uniqueItems": true},
+    "updated_at": {"type": "string", "format": "date-time"}
+  }
+}

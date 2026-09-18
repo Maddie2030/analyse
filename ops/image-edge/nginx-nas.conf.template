@@ -1,0 +1,130 @@
+proxy_cache_path /var/cache/nginx/mreader-images levels=1:2 keys_zone=mreader_images:128m max_size=10g inactive=7d use_temp_path=off;
+
+# Only immutable v4 tile-pack assets and public thumbnails are advertised to an
+# the local Nginx cache can reuse them after per-request authorization.
+map $uri $mreader_cache_control {
+    default "private, max-age=0, no-store";
+    "~^/images/[^/]+/thumbnail-[a-f0-9]{32}\.webp$" "public, max-age=86400, stale-while-revalidate=3600";
+    "~^/images/[^/]+/[^/]+/_v4/[a-f0-9]{20}(?:/w[0-9]+)?/[0-9]{4}\.mrt$" "public, max-age=31536000, immutable";
+}
+
+map $uri $mreader_asset_class {
+    default "protected";
+    "~^/images/[^/]+/thumbnail-[a-f0-9]{32}\.webp$" "public-thumbnail";
+    "~^/images/[^/]+/[^/]+/_v4/[a-f0-9]{20}(?:/w[0-9]+)?/[0-9]{4}\.mrt$" "tilepack-v4-immutable";
+}
+
+# Docker container IPs can change whenever an upstream is recreated. Nginx
+# 1.27.3+ supports dynamic DNS re-resolution for upstream server entries.
+# Pinning the image to 1.30.4 plus Docker's embedded DNS prevents a long-lived
+# image_edge container from holding a stale reader_go / SeaweedFS IP.
+upstream reader_auth {
+    zone reader_auth 64k;
+    resolver 127.0.0.11 valid=10s ipv6=off;
+    resolver_timeout 3s;
+    server reader_go:8080 resolve;
+    keepalive 64;
+}
+
+upstream seaweed_filer {
+    zone seaweed_filer 64k;
+    # NAS mode uses a stable LAN address supplied by Docker envsubst.
+    server ${NAS_SEAWEEDFS_HOST}:${NAS_SEAWEEDFS_PORT};
+    keepalive 64;
+}
+
+server {
+    listen 8080 reuseport;
+    server_name _;
+
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log warn;
+
+    location = /health {
+        access_log off;
+        default_type application/json;
+        return 200 '{"status":"ok","service":"image-edge"}\n';
+    }
+
+    # Readiness remains available to monitoring, but Docker liveness uses
+    # /health so a transient Reader restart does not incorrectly kill Nginx.
+    location = /ready {
+        access_log off;
+        proxy_pass http://reader_auth/internal/image-auth/ready;
+        proxy_pass_request_body off;
+        proxy_set_header Content-Length "";
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_connect_timeout 2s;
+        proxy_send_timeout 5s;
+        proxy_read_timeout 5s;
+        proxy_next_upstream error timeout http_502 http_503 http_504;
+    }
+
+    # Reader Go authorizes every request that reaches the origin. The exact-path
+    # chapter grant is signed, short-lived and can be validated without a host
+    # cookie when an external image CDN uses a separate hostname.
+    location = /_image_auth {
+        internal;
+        proxy_pass http://reader_auth/internal/image-auth;
+        proxy_pass_request_body off;
+        proxy_set_header Content-Length "";
+        proxy_set_header X-Original-URI $request_uri;
+        proxy_set_header Cookie $http_cookie;
+        proxy_set_header Authorization $http_authorization;
+        proxy_set_header Origin $http_origin;
+        proxy_set_header Referer $http_referer;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_connect_timeout 2s;
+        proxy_send_timeout 5s;
+        proxy_read_timeout 5s;
+        proxy_next_upstream error timeout http_502 http_503 http_504;
+    }
+
+    location ^~ /images/ {
+        auth_request /_image_auth;
+
+        # Authorization is NOT part of the local cache key. All authorized users
+        # share one copy of the scrambled object while auth_request still runs
+        # before the cache/content phase on each origin request.
+        proxy_cache mreader_images;
+        proxy_cache_key "$request_method:$uri";
+        proxy_cache_lock on;
+        proxy_cache_lock_timeout 10s;
+        proxy_cache_lock_age 10s;
+        proxy_cache_background_update on;
+        proxy_cache_revalidate on;
+        proxy_cache_use_stale error timeout invalid_header updating http_500 http_502 http_503 http_504;
+        proxy_cache_valid 200 365d;
+
+        # Strip /images/ and all authorization query parameters before SeaweedFS.
+        rewrite ^/images/(.*)$ /$1? break;
+        proxy_pass http://seaweed_filer;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host $proxy_host;
+        proxy_connect_timeout 3s;
+        proxy_send_timeout 30s;
+        proxy_read_timeout 60s;
+        proxy_next_upstream error timeout http_502 http_503 http_504;
+
+        proxy_buffering on;
+        proxy_buffers 16 64k;
+        proxy_buffer_size 64k;
+        proxy_busy_buffers_size 128k;
+
+        proxy_hide_header Set-Cookie;
+        proxy_hide_header Cache-Control;
+        proxy_hide_header Expires;
+        add_header X-MReader-Image-Cache $upstream_cache_status always;
+        add_header X-MReader-Asset-Class $mreader_asset_class always;
+        add_header X-Content-Type-Options nosniff always;
+        add_header Access-Control-Allow-Origin "*" always;
+        add_header Cross-Origin-Resource-Policy "cross-origin" always;
+        add_header Cache-Control $mreader_cache_control always;
+    }
+}

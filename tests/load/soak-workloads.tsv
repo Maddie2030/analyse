@@ -1,0 +1,8 @@
+# workload|level|reason
+catalog_detail|10|Catalog hot-cache/read path
+reader_manifest|8|Reader DB/token path
+reader_image|12|Protected image delivery/cache path
+progress_put|8|Write/event stream path
+social_comments|8|Social DB read path
+realtime_ws|10|Long-lived authenticated sockets
+admin_scraper_operations|3|Admin operational read path

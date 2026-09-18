@@ -1,0 +1,18 @@
+
+[2026-09-18 19:21:41] ==> Regression [static] api-flow-ownership-static.sh
+API ownership/integration static regression PASSED
+
+[2026-09-18 19:21:44] ==> Regression [static] api-route-coverage-static.sh
+API manifest structural audit PASS; semantic audit deferred to Dockerized API gate (no host Python).
+API route coverage static regression PASS: 139 classified routes
+
+[2026-09-18 19:21:45] ==> Regression [static] api-test-contracts-static.sh
+API test contract/edge-case static regression PASSED
+
+[2026-09-18 19:21:45] ==> Regression [static] backup-agent-static.sh
+backup agent static regression PASSED
+
+[2026-09-18 19:21:49] ==> Regression [static] backup-daily-policy.sh
+/c/Users/madhu/Downloads/conso/mreader-rc485-p12.8.1-source-test-current/mreader-rc485-p12.8.1/scripts/backup/backup-agent.sh: line 421: jq: command not found
+
+[2026-09-18 19:21:51] ==> Regression [static] backup-local-runtime.sh

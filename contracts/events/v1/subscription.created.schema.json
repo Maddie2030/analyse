@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "subscription.created v1 payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["subscription_id", "user_id", "series_id", "created_at"],
+  "properties": {
+    "subscription_id": {"type": "string", "format": "uuid"},
+    "user_id": {"type": "string", "format": "uuid"},
+    "series_id": {"type": "string", "format": "uuid"},
+    "created_at": {"type": "string", "format": "date-time"}
+  }
+}

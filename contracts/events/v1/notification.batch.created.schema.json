@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "notification.batch.created v1 payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["source_event_id", "notification_count", "created_at"],
+  "properties": {
+    "source_event_id": {"type": "string", "format": "uuid"},
+    "notification_count": {"type": "integer", "minimum": 1},
+    "series_id": {"type": ["string", "null"], "format": "uuid"},
+    "chapter_id": {"type": ["string", "null"], "format": "uuid"},
+    "recipient_user_id": {"type": ["string", "null"], "format": "uuid"},
+    "created_at": {"type": "string", "format": "date-time"}
+  }
+}

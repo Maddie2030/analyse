@@ -1,0 +1,20 @@
+name: mreader-hybrid-public-edge
+
+# Public connectivity adapters for the Docker Desktop hybrid USER plane only.
+# The admin gateway on 8081 is intentionally excluded. The user gateway remains in Kubernetes. cloudflared reaches the
+# Docker Desktop LoadBalancer through host.docker.internal; Tailscale Funnel is
+# managed by the Windows Tailscale client from scripts/hybrid/public-up.sh.
+services:
+  cloudflare_quick:
+    image: cloudflare/cloudflared:2026.8.3
+    restart: "no"
+    command:
+      - tunnel
+      - --no-autoupdate
+      - --url
+      - http://host.docker.internal:${HYBRID_GATEWAY_PORT:-8080}
+    environment:
+      # HTTP/2 avoids depending on a clean UDP/QUIC path through Docker Desktop.
+      TUNNEL_TRANSPORT_PROTOCOL: ${CLOUDFLARED_PROTOCOL:-http2}
+    mem_limit: ${CLOUDFLARED_MEMORY_LIMIT:-128m}
+    cpus: ${CLOUDFLARED_CPU_LIMIT:-0.25}

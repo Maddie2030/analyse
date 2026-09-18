@@ -1,0 +1,5 @@
+pytest==8.3.5
+requests==2.32.3
+psycopg[binary]==3.2.6
+Pillow==11.1.0
+asyncpg==0.30.0

@@ -1,0 +1,317 @@
+{
+  "source_checkpoint": "GENERATED_AT_PACKAGE_BUILD",
+  "graph": "graphify-out/development-graph.json",
+  "domains": [
+    {
+      "symptom": "Reader page blank / decode failure",
+      "start_here_text": "`frontend/src/pages/Reader.tsx`, `frontend/src/reader/ProtectedPage.tsx`, `codec.ts`, `codec.worker.ts`",
+      "start_paths": [
+        "frontend/src/pages/Reader.tsx",
+        "frontend/src/reader/ProtectedPage.tsx",
+        "codec.ts",
+        "codec.worker.ts"
+      ],
+      "follow_dependency_path": "`protectedAssetCache.ts` \u2192 Reader Go \u2192 Image Edge/SeaweedFS",
+      "verification_text": "`tests/regression/browser-reading-acceptance-static.sh`, `tests/regression/test_p10_1_reader_ui.py`, `tests/api/test_06_reader_manifest_history.py`, `test_07_reader_images_tokens.py`, `test_27_mobile_reader_adapter.py`",
+      "verification_refs": [
+        "tests/regression/browser-reading-acceptance-static.sh",
+        "tests/regression/test_p10_1_reader_ui.py",
+        "tests/api/test_06_reader_manifest_history.py",
+        "test_07_reader_images_tokens.py",
+        "test_27_mobile_reader_adapter.py"
+      ]
+    },
+    {
+      "symptom": "Protected page re-downloads / cache miss",
+      "start_here_text": "`frontend/src/reader/protectedAssetCache.ts`",
+      "start_paths": [
+        "frontend/src/reader/protectedAssetCache.ts"
+      ],
+      "follow_dependency_path": "CacheStorage / `mreader-protected-assets-v1`, runtime config, auth cache clearing",
+      "verification_text": "Browser reading acceptance + reader UI + quota/offline/two-tab cases",
+      "verification_refs": []
+    },
+    {
+      "symptom": "IndexedDB reading state missing / duplicate sync",
+      "start_here_text": "`frontend/src/reading/indexedDB.ts`, `browser.ts`, `repository.ts`, `transport.ts`",
+      "start_paths": [
+        "frontend/src/reading/indexedDB.ts",
+        "browser.ts",
+        "repository.ts",
+        "transport.ts"
+      ],
+      "follow_dependency_path": "`useReading.ts` \u2192 Reader/Library UI \u2192 Progress Go",
+      "verification_text": "`tests/regression/test_web_reading_repository.mjs`, `test_rc485_p02_reading_source.py`, browser reading specs, `tests/api/test_26_reading_commands.py`",
+      "verification_refs": [
+        "tests/regression/test_web_reading_repository.mjs",
+        "test_rc485_p02_reading_source.py",
+        "tests/api/test_26_reading_commands.py"
+      ]
+    },
+    {
+      "symptom": "Recent read/history/library wrong",
+      "start_here_text": "`frontend/src/pages/Library.tsx`, `frontend/src/reading/*`",
+      "start_paths": [
+        "frontend/src/pages/Library.tsx",
+        "frontend/src/reading/*"
+      ],
+      "follow_dependency_path": "Progress Go + Smart Library/Social projections + Android reading repository",
+      "verification_text": "`tests/api/test_17_smart_library.py`, `test_26_reading_commands.py`, `test_p10_1_library_ui.py`, P02 reading source tests",
+      "verification_refs": [
+        "tests/api/test_17_smart_library.py",
+        "test_26_reading_commands.py",
+        "test_p10_1_library_ui.py"
+      ]
+    },
+    {
+      "symptom": "Android reader parity issue",
+      "start_here_text": "`ReaderScreen.kt`, `MReaderApiAdapter.kt`, `ReadingRepository.kt`, `ProtectedAssetStore.kt`",
+      "start_paths": [
+        "ReaderScreen.kt",
+        "MReaderApiAdapter.kt",
+        "ReadingRepository.kt",
+        "ProtectedAssetStore.kt"
+      ],
+      "follow_dependency_path": "Reader/Progress APIs, native codec/cache",
+      "verification_text": "Android repository/codec tests + API mobile reader tests + `test_rc485_p04_android_source.py`",
+      "verification_refs": [
+        "test_rc485_p04_android_source.py"
+      ]
+    },
+    {
+      "symptom": "Login/session/logout/cookie issue",
+      "start_here_text": "`frontend/src/hooks/useAuth.tsx`, `frontend/src/api/client.ts`",
+      "start_paths": [
+        "frontend/src/hooks/useAuth.tsx",
+        "frontend/src/api/client.ts"
+      ],
+      "follow_dependency_path": "Auth service/session contract \u2192 critical Valkey \u2192 gateway",
+      "verification_text": "auth API tests, session/ownership static checks, private-transport tests",
+      "verification_refs": []
+    },
+    {
+      "symptom": "Catalog browse/search/series issue",
+      "start_here_text": "`Catalog.tsx`, `AdvancedSearch.tsx`, `SeriesDetail.tsx`",
+      "start_paths": [
+        "Catalog.tsx",
+        "AdvancedSearch.tsx",
+        "SeriesDetail.tsx"
+      ],
+      "follow_dependency_path": "Catalog Go HTTP API/store/cache \u2192 PostgreSQL",
+      "verification_text": "`tests/api/test_04_catalog_reads.py`, browse/search UI tests, series UI tests",
+      "verification_refs": [
+        "tests/api/test_04_catalog_reads.py"
+      ]
+    },
+    {
+      "symptom": "Admin catalog mutation/curation issue",
+      "start_here_text": "`AdminDashboard.tsx`, `AdminCuration.tsx`",
+      "start_paths": [
+        "AdminDashboard.tsx",
+        "AdminCuration.tsx"
+      ],
+      "follow_dependency_path": "admin gateway \u2192 Catalog write-enabled API/store",
+      "verification_text": "`test_05_catalog_admin_writes.py`, P10 admin curation/content UI, ownership route tests",
+      "verification_refs": [
+        "test_05_catalog_admin_writes.py"
+      ]
+    },
+    {
+      "symptom": "Scraper discovery/source issue",
+      "start_here_text": "`AdminScraper.tsx`, adapters under `services/scraper_service/app/adapters/`",
+      "start_paths": [
+        "AdminScraper.tsx",
+        "services/scraper_service/app/adapters/"
+      ],
+      "follow_dependency_path": "scraper fetcher/browser/discovery/queue",
+      "verification_text": "scraper API tests + hardening/source compatibility tests",
+      "verification_refs": []
+    },
+    {
+      "symptom": "Stage / retry / manual upload issue",
+      "start_here_text": "`AdminScraperNewSeries.tsx`",
+      "start_paths": [
+        "AdminScraperNewSeries.tsx"
+      ],
+      "follow_dependency_path": "`staging_store.py`, `drafts.py`, `series_drafts.py`, revision/generation fences",
+      "verification_text": "P07 staging/retry/status regression tests, `test_18_scraper_operations.py`, deep route coverage",
+      "verification_refs": [
+        "test_18_scraper_operations.py"
+      ]
+    },
+    {
+      "symptom": "Publish stuck / only partial pages published",
+      "start_here_text": "`services/scraper_service/app/publication_bridge.py`, `series_drafts.py`",
+      "start_paths": [
+        "services/scraper_service/app/publication_bridge.py",
+        "series_drafts.py"
+      ],
+      "follow_dependency_path": "Scraper \u2192 Media/Image \u2192 Catalog publication \u2192 SeaweedFS/PostgreSQL",
+      "verification_text": "`test_scraper_media_publication_cutover.py`, `test_media_catalog_publication_cutover.py`, Catalog publication contract/source tests",
+      "verification_refs": [
+        "test_scraper_media_publication_cutover.py",
+        "test_media_catalog_publication_cutover.py"
+      ]
+    },
+    {
+      "symptom": "Media transform / WebP / chapter asset issue",
+      "start_here_text": "`services/image_service/app/media_operations.py`, `services/image_service/app/services/chapter_ingestion.py`",
+      "start_paths": [
+        "services/image_service/app/media_operations.py",
+        "services/image_service/app/services/chapter_ingestion.py"
+      ],
+      "follow_dependency_path": "SeaweedFS + catalog publication receipt + lifecycle worker",
+      "verification_text": "`tests/api/test_13_media.py`, `test_19_media_events.py`, `webp-publish-verification-static.sh`, media cutover tests",
+      "verification_refs": [
+        "tests/api/test_13_media.py",
+        "test_19_media_events.py",
+        "webp-publish-verification-static.sh"
+      ]
+    },
+    {
+      "symptom": "Catalog publication ownership/data corruption risk",
+      "start_here_text": "`services/catalog_go/internal/store/publication.go`, `internal/httpapi/api.go`",
+      "start_paths": [
+        "services/catalog_go/internal/store/publication.go",
+        "internal/httpapi/api.go"
+      ],
+      "follow_dependency_path": "publication contract \u2192 PostgreSQL transaction \u2192 event_outbox",
+      "verification_text": "publication Go tests, `test_catalog_publication_contract.py`, `test_catalog_publication_http_source.py`, P06.4/P06.6 ownership tests",
+      "verification_refs": [
+        "test_catalog_publication_contract.py",
+        "test_catalog_publication_http_source.py"
+      ]
+    },
+    {
+      "symptom": "Delete/replace storage cleanup issue",
+      "start_here_text": "Media lifecycle routes/worker + Catalog mutation path",
+      "start_paths": [],
+      "follow_dependency_path": "generation/reference capture \u2192 lifecycle cleanup \u2192 SeaweedFS",
+      "verification_text": "lifecycle API/integrity tests, P07 deletion/generation regressions",
+      "verification_refs": []
+    },
+    {
+      "symptom": "Notifications missing/duplicate",
+      "start_here_text": "`services/notification_worker/`",
+      "start_paths": [
+        "services/notification_worker/"
+      ],
+      "follow_dependency_path": "Catalog/Progress outbox \u2192 Outbox Relay \u2192 RabbitMQ \u2192 notifications rows",
+      "verification_text": "`tests/api/test_12_notifications.py`, notification worker Go tests, browser realtime spec",
+      "verification_refs": [
+        "tests/api/test_12_notifications.py"
+      ]
+    },
+    {
+      "symptom": "Realtime notification/comment issue",
+      "start_here_text": "`services/realtime_go/internal/sources/*`, `hub/*`",
+      "start_paths": [
+        "services/realtime_go/internal/sources/*",
+        "hub/*"
+      ],
+      "follow_dependency_path": "RabbitMQ notification batches / Valkey comment signals \u2192 canonical reread",
+      "verification_text": "realtime hub tests + `tests/browser/notification-realtime.spec.mjs`",
+      "verification_refs": [
+        "tests/browser/notification-realtime.spec.mjs"
+      ]
+    },
+    {
+      "symptom": "Social/bookmark/subscription/comment issue",
+      "start_here_text": "`services/social_ts/src/routes.ts`",
+      "start_paths": [
+        "services/social_ts/src/routes.ts"
+      ],
+      "follow_dependency_path": "Prisma/PostgreSQL + Valkey comment signals",
+      "verification_text": "relevant API tests + UI comment/library tests + ownership route gate",
+      "verification_refs": []
+    },
+    {
+      "symptom": "Database backup/snapshot/download issue",
+      "start_here_text": "`frontend/src/pages/AdminDatabase.tsx`, `services/scraper_service/app/database_facade.py`",
+      "start_paths": [
+        "frontend/src/pages/AdminDatabase.tsx",
+        "services/scraper_service/app/database_facade.py"
+      ],
+      "follow_dependency_path": "backup-agent + host recovery root + PostgreSQL tools",
+      "verification_text": "P08.3/P08.5/P08.7 regression tests, backup-agent/static/local backup suites",
+      "verification_refs": []
+    },
+    {
+      "symptom": "Restore/drill safety issue",
+      "start_here_text": "restore scripts under `scripts/backup/` and `scripts/recovery/`",
+      "start_paths": [
+        "scripts/backup/",
+        "scripts/recovery/"
+      ],
+      "follow_dependency_path": "recovery catalog, fencing, safety capture, PostgreSQL",
+      "verification_text": "P08.6/P08.7 restore qualification + local recovery catalog tests",
+      "verification_refs": []
+    },
+    {
+      "symptom": "Hybrid startup/bootstrap issue",
+      "start_here_text": "`hybrid-up.sh`, `hybrid-down.sh`, `scripts/hybrid/`, deployment manifests",
+      "start_paths": [
+        "hybrid-up.sh",
+        "hybrid-down.sh",
+        "scripts/hybrid/"
+      ],
+      "follow_dependency_path": "Compose stateful backbone + Docker Desktop K8s + migrations/gateways",
+      "verification_text": "hybrid/Windows/MSYS/volume/secret regressions + diagnostics",
+      "verification_refs": []
+    },
+    {
+      "symptom": "KEDA/HPA/worker scaling issue",
+      "start_here_text": "`deploy/docker-desktop-hybrid/admin-keda.yaml` and app manifests",
+      "start_paths": [
+        "deploy/docker-desktop-hybrid/admin-keda.yaml"
+      ],
+      "follow_dependency_path": "RabbitMQ/queue metrics \u2192 worker deployments",
+      "verification_text": "scaling/static deployment tests and runtime pod/KEDA checks",
+      "verification_refs": []
+    },
+    {
+      "symptom": "PostgreSQL volume/adoption/data preservation issue",
+      "start_here_text": "Compose stateful files + hybrid volume scripts",
+      "start_paths": [],
+      "follow_dependency_path": "migration/quiescence/backup ordering",
+      "verification_text": "hybrid legacy-volume, volume inspection, pre-upgrade backup, migration quiescence tests",
+      "verification_refs": []
+    },
+    {
+      "symptom": "NAS/SeaweedFS connectivity issue",
+      "start_here_text": "`shared/shared/seaweedfs.py`, Media config, `ops/nas-seaweedfs/`",
+      "start_paths": [
+        "shared/shared/seaweedfs.py",
+        "ops/nas-seaweedfs/"
+      ],
+      "follow_dependency_path": "NAS endpoint \u2192 Image Edge \u2192 Reader/Media",
+      "verification_text": "storage env contract, media API tests, diagnostics runtime snapshot",
+      "verification_refs": []
+    },
+    {
+      "symptom": "Gateway route/CORS/public edge issue",
+      "start_here_text": "user/admin Caddy/gateway manifests + runtime config",
+      "start_paths": [],
+      "follow_dependency_path": "ownership manifest \u2192 service route \u2192 auth/session",
+      "verification_text": "`api-flow-ownership-static.sh`, twin-plane static, API route audit, health gateway tests",
+      "verification_refs": [
+        "api-flow-ownership-static.sh"
+      ]
+    },
+    {
+      "symptom": "Diagnostics report incomplete/wrong",
+      "start_here_text": "`diagnose-mreader.sh`, `scripts/diagnostics/report_builder.py`, `analyze_report.py`",
+      "start_paths": [
+        "diagnose-mreader.sh",
+        "scripts/diagnostics/report_builder.py",
+        "analyze_report.py"
+      ],
+      "follow_dependency_path": "runtime snapshot + API runner + bundle builder",
+      "verification_text": "`tests/diagnostics/*`, `diagnostics-harness-static.sh`, comprehensive harness static",
+      "verification_refs": [
+        "tests/diagnostics/*",
+        "diagnostics-harness-static.sh"
+      ]
+    }
+  ]
+}

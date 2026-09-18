@@ -1,0 +1,27 @@
+gate	status	evidence
+p11_4_source_test_checkpoint	PASS	ed53fc51c96b299427781f4b2564911accba7c97
+android_stale_projection_assertion_red_green	PASS	old audit fails expected projection string; repaired full audit passes
+dependency_pin_stale_curl_assertion_red_green	PASS	old pin check fails expected drift; repaired gate passes
+web_reading_repository	PASS	31/31 node --experimental-strip-types
+android_reading_source	PASS	8/8
+android_static_integration	PASS	full source audit
+web_android_reader_contract	PASS	contract audit
+migration_source_review	PASS	21/21 quiescence+runner+reconciliation+preupgrade
+preupgrade_ordering	PASS	hybrid-preupgrade-backup-order.sh
+p09_2_p09_3_source_fences	PASS	34/34
+p09_4_p09_5_source_fences	PASS	28/28
+api_ownership	PASS	api-flow-ownership-static.sh
+api_route_coverage	PASS	139/139 source routes classified
+p10_truthfulness_races	PASS	50/50
+resource_pressure_guards	PASS	pressure/user-plane/twin-plane budgets
+browser_spec_syntax	PASS	node --check tests/browser/*.mjs
+current_release_validator_source_path	PASS	validate-current-release.sh rc=0
+current_release_compose_render	BLOCKED	Docker and configured .env unavailable
+ripwire_changed_scope	PASS	untested=0; one changed-test obligation executed green
+independent_web_review	BLOCKED	no independent reviewer/subagent integration available
+independent_android_review	BLOCKED	no independent reviewer/subagent integration available
+independent_migration_review	BLOCKED	no independent reviewer/subagent integration available
+p11_1_build_runtime	BLOCKED	carried forward
+p11_2_destructive_restore_runtime	BLOCKED	carried forward
+p11_3_live_performance_runtime	BLOCKED	carried forward
+p11_4_release_acceptance	BLOCKED	independent review incomplete; runtime blockers remain

@@ -1,0 +1,157 @@
+{$CADDY_SITE_ADDRESS} {
+    encode zstd gzip
+
+    log {
+        output stdout
+        format json
+        sampling {
+            interval 1s
+            first 20
+            thereafter 20
+        }
+    }
+
+    @skipAccessLog path /images /images/* /healthz
+    log_skip @skipAccessLog
+
+    # Public/user plane intentionally accepts only small request bodies. Large
+    # scraper/publisher uploads belong to the private admin plane.
+    request_body {
+        max_size 32MB
+    }
+
+    @internal path /internal /internal/*
+    respond @internal 404
+
+    # Explicitly fence retired API families before broader route matchers.
+    # These paths must stay unavailable even if a downstream service later
+    # reintroduces a legacy handler or catch-all.
+    @retiredApi path /api/token/page /api/token/page/* /api/scraper/admin/backups /api/scraper/admin/backups/* /api/scraper/admin/database /api/scraper/admin/database/*
+    handle @retiredApi {
+        respond "not found" 404
+    }
+
+    @healthz path /healthz
+    handle @healthz {
+        respond "ok" 200
+    }
+
+    # Network-level admin isolation. These routes never reach application RBAC
+    # from the public user gateway.
+    @adminUi path /admin /admin/*
+    handle @adminUi {
+        respond "not found" 404
+    }
+
+    @adminApi path /api/admin/database /api/admin/database/* /api/scraper /api/scraper/* /api/upload /api/upload/* /api/catalog/admin /api/catalog/admin/* /api/auth/admin /api/auth/admin/* /api/notifications/admin /api/notifications/admin/*
+    handle @adminApi {
+        respond "not found" 404
+    }
+
+    @catalogWrite {
+        path /api/catalog /api/catalog/*
+        method POST PUT PATCH DELETE
+    }
+    handle @catalogWrite {
+        respond "not found" 404
+    }
+
+    @catalog path /api/catalog /api/catalog/*
+    handle @catalog {
+        reverse_proxy catalog-go:8080 {
+            header_down X-MReader-Owner catalog
+            header_up X-MReader-Catalog-Route user-read-only
+            lb_retries 1
+            lb_try_duration 2s
+        }
+    }
+
+    @auth path /api/auth /api/auth/*
+    handle @auth {
+        reverse_proxy auth-service:8000 {
+            header_down X-MReader-Owner auth
+            lb_retries 3
+            lb_try_duration 5s
+        }
+    }
+
+    @mobile path /api/mobile /api/mobile/*
+    handle @mobile {
+        reverse_proxy reader-go:8080 {
+            header_down X-MReader-Owner reader
+            header_up X-MReader-Reader-Route mobile-adapter-v1
+            lb_retries 1
+            lb_try_duration 2s
+        }
+    }
+
+    @reader path /api/reader /api/reader/*
+    handle @reader {
+        reverse_proxy reader-go:8080 {
+            header_down X-MReader-Owner reader
+            header_up X-MReader-Reader-Route user-primary
+            lb_retries 1
+            lb_try_duration 2s
+        }
+    }
+
+    @token path /api/token /api/token/*
+    handle @token {
+        reverse_proxy reader-go:8080 {
+            header_down X-MReader-Owner reader
+            header_up X-MReader-Reader-Route user-token
+            lb_retries 1
+            lb_try_duration 2s
+        }
+    }
+
+    @realtime path /api/realtime /api/realtime/*
+    handle @realtime {
+        reverse_proxy realtime-go:8080 {
+            header_down X-MReader-Owner realtime
+            lb_retries 1
+            lb_try_duration 2s
+        }
+    }
+
+    @progress path /api/progress /api/progress/*
+    handle @progress {
+        reverse_proxy progress-go:8080 {
+            header_down X-MReader-Owner progress
+            lb_retries 1
+            lb_try_duration 2s
+        }
+    }
+
+    @social path /api/social /api/social/*
+    handle @social {
+        reverse_proxy social-ts:8080 {
+            header_down X-MReader-Owner social
+            lb_retries 1
+            lb_try_duration 2s
+        }
+    }
+
+    @notifications path /api/notifications /api/notifications/*
+    handle @notifications {
+        reverse_proxy social-ts:8080 {
+            header_down X-MReader-Owner notifications
+            lb_retries 1
+            lb_try_duration 2s
+        }
+    }
+
+    @images path /images /images/*
+    handle @images {
+        reverse_proxy host.docker.internal:18081 {
+            header_down X-MReader-Owner reader
+            header_up X-MReader-Image-Route docker-compose-edge-cache
+            lb_retries 1
+            lb_try_duration 2s
+        }
+    }
+
+    handle {
+        reverse_proxy frontend:80
+    }
+}

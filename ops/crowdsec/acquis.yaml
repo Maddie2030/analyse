@@ -1,0 +1,9 @@
+filenames:
+  - /var/log/caddy/access.log
+labels:
+  type: caddy
+---
+filenames:
+  - /var/log/nginx/access.log
+labels:
+  type: nginx

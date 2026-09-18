@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "media.uploaded v1 payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["upload_id", "object_paths", "uploaded_at"],
+  "properties": {
+    "upload_id": {"type": "string", "minLength": 1},
+    "series_id": {"type": ["string", "null"], "format": "uuid"},
+    "chapter_id": {"type": ["string", "null"], "format": "uuid"},
+    "object_paths": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1},
+    "uploaded_at": {"type": "string", "format": "date-time"}
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "cache.invalidate v1 payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["entity_type", "entity_id", "scopes", "requested_at"],
+  "properties": {
+    "entity_type": {"type": "string", "minLength": 1, "maxLength": 64},
+    "entity_id": {"type": "string", "minLength": 1, "maxLength": 255},
+    "scopes": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1, "uniqueItems": true},
+    "requested_at": {"type": "string", "format": "date-time"}
+  }
+}

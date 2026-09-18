@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Progress checkpoint request v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["command_id", "session_generation", "command_sequence", "last_page", "scroll_position", "completed", "completed_page"],
+  "properties": {
+    "command_id": { "type": "string", "format": "uuid" },
+    "session_generation": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+    "command_sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+    "last_page": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+    "scroll_position": { "type": "number", "minimum": 0, "maximum": 1 },
+    "completed": { "type": "boolean" },
+    "completed_page": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "completed": { "const": false } } },
+      "then": { "properties": { "completed_page": { "const": 0 } } },
+      "else": { "properties": { "completed_page": { "minimum": 1 } } }
+    }
+  ]
+}

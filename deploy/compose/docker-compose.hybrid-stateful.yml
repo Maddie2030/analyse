@@ -1,0 +1,216 @@
+name: mreader-hybrid-stateful
+
+# Docker Desktop hybrid profile: only durable/shared infrastructure remains in
+# ordinary Docker Compose. Application APIs and workers run in Kubernetes.
+services:
+  db:
+    image: postgres:16.10-alpine3.22
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ../../db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "${HYBRID_STATEFUL_BIND_IP:-127.0.0.1}:${HYBRID_POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 5s
+    mem_limit: ${DB_MEMORY_LIMIT:-1g}
+    cpus: ${DB_CPU_LIMIT:-1.5}
+    networks: [stateful]
+
+  # Critical Valkey: sessions, progress stream/state and coordination.
+  # Keeps the existing aggregate Valkey budget when combined with redis_cache.
+  redis:
+    image: valkey/valkey:9.1.1-alpine
+    restart: unless-stopped
+    command:
+      - valkey-server
+      - --maxmemory
+      - ${REDIS_CRITICAL_DATA_MAXMEMORY:-224mb}
+      - --maxmemory-policy
+      - noeviction
+      - --save
+      - ""
+      - --appendonly
+      - ${REDIS_APPENDONLY:-yes}
+      - --appendfsync
+      - ${REDIS_APPENDFSYNC:-everysec}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "${HYBRID_STATEFUL_BIND_IP:-127.0.0.1}:${HYBRID_REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
+    mem_limit: ${REDIS_CRITICAL_MEMORY_LIMIT:-384m}
+    cpus: ${REDIS_CRITICAL_CPU_LIMIT:-0.45}
+    networks: [stateful]
+
+  # Expendable cache Valkey: Reader image grants and trending dedupe only.
+  # No AOF/fsync is needed; eviction here can never log a user out.
+  redis_cache:
+    image: valkey/valkey:9.1.1-alpine
+    restart: unless-stopped
+    command:
+      - valkey-server
+      - --maxmemory
+      - ${REDIS_CACHE_DATA_MAXMEMORY:-160mb}
+      - --maxmemory-policy
+      - allkeys-lru
+      - --save
+      - ""
+      - --appendonly
+      - "no"
+    ports:
+      - "${HYBRID_STATEFUL_BIND_IP:-127.0.0.1}:${HYBRID_REDIS_CACHE_PORT:-6380}:6379"
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
+    mem_limit: ${REDIS_CACHE_MEMORY_LIMIT:-256m}
+    cpus: ${REDIS_CACHE_CPU_LIMIT:-0.30}
+    networks: [stateful]
+
+  rabbitmq:
+    image: rabbitmq:4.3.5-management-alpine
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-mreader}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-mreader}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-mreader}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    ports:
+      - "${HYBRID_STATEFUL_BIND_IP:-127.0.0.1}:${HYBRID_RABBITMQ_AMQP_PORT:-5672}:5672"
+      - "${HYBRID_STATEFUL_BIND_IP:-127.0.0.1}:${HYBRID_RABBITMQ_MANAGEMENT_PORT:-15672}:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 15s
+    mem_limit: ${RABBITMQ_MEMORY_LIMIT:-512m}
+    cpus: ${RABBITMQ_CPU_LIMIT:-0.75}
+    networks: [stateful]
+
+  image_edge:
+    image: nginx:1.30.4-alpine
+    restart: unless-stopped
+    stop_grace_period: 30s
+    environment:
+      NAS_SEAWEEDFS_HOST: ${NAS_SEAWEEDFS_HOST}
+      NAS_SEAWEEDFS_PORT: ${NAS_SEAWEEDFS_PORT:-8888}
+      READER_AUTH_HOST: host.docker.internal
+      READER_AUTH_PORT: ${HYBRID_READER_AUTH_PORT:-18082}
+      NGINX_ENVSUBST_FILTER: ^(NAS_SEAWEEDFS_HOST|NAS_SEAWEEDFS_PORT|READER_AUTH_HOST|READER_AUTH_PORT)$
+    volumes:
+      - ../../deploy/docker-desktop-hybrid/image-edge-nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ../../ops/image-edge/nginx-main.conf:/etc/nginx/nginx.conf:ro
+      - image_cache:/var/cache/nginx
+    ports:
+      - "${HYBRID_STATEFUL_BIND_IP:-127.0.0.1}:${HYBRID_IMAGE_EDGE_PORT:-18081}:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080/ready || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+    mem_limit: ${IMAGE_EDGE_MEMORY_LIMIT:-256m}
+    cpus: ${IMAGE_EDGE_CPU_LIMIT:-0.5}
+    networks: [stateful]
+
+  backup_agent:
+    build:
+      context: ../..
+      dockerfile: ops/postgres-backup/Dockerfile
+    image: mreader/postgres-backup:v1.3.0-rc4.84
+    restart: unless-stopped
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_REPLICATION_USER: ${POSTGRES_BACKUP_REPLICATION_USER:-mreader_backup}
+      POSTGRES_REPLICATION_PASSWORD: ${POSTGRES_BACKUP_REPLICATION_PASSWORD:-}
+      POSTGRES_BACKUP_LOCAL_ROOT: /mreader-db-protection
+      POSTGRES_BACKUP_SPOOL: /mreader-db-protection/staging/backup-agent
+      RECOVERY_BRIDGE_TOKEN: ${RECOVERY_BRIDGE_TOKEN:-}
+      POSTGRES_BACKUP_CATALOG_SYNC_SECONDS: ${POSTGRES_BACKUP_CATALOG_SYNC_SECONDS:-300}
+      POSTGRES_BACKUP_DAILY_RETENTION_DAYS: ${POSTGRES_BACKUP_DAILY_RETENTION_DAYS:-4}
+      POSTGRES_BACKUP_SNAPSHOT_EVERY_DAYS: ${POSTGRES_BACKUP_SNAPSHOT_EVERY_DAYS:-2}
+      POSTGRES_BACKUP_SNAPSHOT_RETENTION_DAYS: ${POSTGRES_BACKUP_SNAPSHOT_RETENTION_DAYS:-2}
+      POSTGRES_BACKUP_SNAPSHOT_MAX_RATE: ${POSTGRES_BACKUP_SNAPSHOT_MAX_RATE:-32M}
+      POSTGRES_BACKUP_VERIFY_TIME: ${POSTGRES_BACKUP_VERIFY_TIME:-21:00}
+      POSTGRES_BACKUP_AUTO_WINDOW_START: ${POSTGRES_BACKUP_AUTO_WINDOW_START:-20:00}
+      POSTGRES_BACKUP_AUTO_WINDOW_END: ${POSTGRES_BACKUP_AUTO_WINDOW_END:-22:00}
+      MREADER_VERSION: v1.3.0-rc4.84
+      TZ: ${POSTGRES_BACKUP_TZ:-Asia/Kolkata}
+    volumes:
+      - "${MREADER_DB_PROTECTION_ROOT:?MREADER_DB_PROTECTION_ROOT is required}:/mreader-db-protection"
+    ports:
+      - "${HYBRID_STATEFUL_BIND_IP:-127.0.0.1}:${HYBRID_RECOVERY_BRIDGE_PORT:-18084}:8082"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "mreader-backup-agent", "health"]
+      interval: 5m
+      timeout: 10s
+      retries: 2
+      start_period: 30s
+    mem_limit: ${POSTGRES_BACKUP_MEMORY_LIMIT:-256m}
+    cpus: ${POSTGRES_BACKUP_CPU_LIMIT:-0.5}
+    networks: [stateful]
+
+  migrate:
+    image: postgres:16.10-alpine3.22
+    profiles: ["migration"]
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+    volumes:
+      - ../../db/migrations:/migrations:ro
+      - ../../ops/migrate/run.sh:/run-migrations.sh:ro
+      - ../../ops/migrate:/usr/local/lib/mreader/migrate:ro
+      - ../../db/upgrade:/migration-safety:ro
+    command: ["sh", "/run-migrations.sh"]
+    depends_on:
+      db:
+        condition: service_healthy
+    mem_limit: ${MIGRATE_MEMORY_LIMIT:-256m}
+    cpus: ${MIGRATE_CPU_LIMIT:-0.5}
+    networks: [stateful]
+
+networks:
+  stateful:
+    driver: bridge
+
+volumes:
+  pgdata:
+    name: ${HYBRID_PGDATA_VOLUME_NAME:-mreader_pgdata}
+  redis_data:
+    name: ${HYBRID_REDIS_VOLUME_NAME:-mreader_redis_data}
+  rabbitmq_data:
+    name: ${HYBRID_RABBITMQ_VOLUME_NAME:-mreader_rabbitmq_data}
+  image_cache:
+    name: ${HYBRID_IMAGE_CACHE_VOLUME_NAME:-mreader_image_cache}

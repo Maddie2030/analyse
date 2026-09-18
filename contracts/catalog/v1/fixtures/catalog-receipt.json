@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "status": "committed",
+  "idempotency_key": "22222222-2222-4222-8222-222222222222",
+  "operation_id": "33333333-3333-4333-8333-333333333333",
+  "actor_id": "44444444-4444-4444-8444-444444444444",
+  "payload_sha256": "4a4de87cbc6e05845d033616a757bdf88bf83613dd901d711e95d5bcdf643488",
+  "series_id": "11111111-1111-4111-8111-111111111111",
+  "chapter_id": "66666666-6666-4666-8666-666666666666",
+  "chapter_revision": 1,
+  "series_revision": 8,
+  "page_count": 1,
+  "publication_event_id": "77777777-7777-4777-8777-777777777777"
+}

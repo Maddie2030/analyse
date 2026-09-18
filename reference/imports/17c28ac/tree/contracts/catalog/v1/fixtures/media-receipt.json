@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "media_operation_id": "55555555-5555-4555-8555-555555555555",
+  "operation_id": "33333333-3333-4333-8333-333333333333",
+  "actor_id": "44444444-4444-4444-8444-444444444444",
+  "source_revision": 3,
+  "media_generation": 2,
+  "page_count": 1,
+  "manifest_sha256": "eda3b0711cb119f12b25d48913cecec4e911108d984b9afc07ffb75af3ffda45"
+}

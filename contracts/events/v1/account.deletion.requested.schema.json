@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "account.deletion.requested v1 payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["request_id", "user_id", "requested_at"],
+  "properties": {
+    "request_id": {"type": "string", "format": "uuid"},
+    "user_id": {"type": "string", "format": "uuid"},
+    "requested_at": {"type": "string", "format": "date-time"},
+    "reason": {"type": ["string", "null"], "maxLength": 1000}
+  }
+}

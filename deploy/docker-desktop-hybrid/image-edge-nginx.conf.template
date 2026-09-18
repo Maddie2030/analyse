@@ -1,0 +1,54 @@
+proxy_cache_path /var/cache/nginx/mreader-images levels=1:2 keys_zone=mreader_images:128m max_size=10g inactive=7d use_temp_path=off;
+
+map $uri $mreader_cache_control {
+    default "private, max-age=0, no-store";
+    "~^/images/[^/]+/thumbnail-[a-f0-9]{32}\.webp$" "public, max-age=86400, stale-while-revalidate=3600";
+    "~^/images/[^/]+/[^/]+/_v4/[a-f0-9]{20}(?:/w[0-9]+)?/[0-9]{4}\.mrt$" "public, max-age=31536000, immutable";
+}
+map $uri $mreader_asset_class {
+    default "protected";
+    "~^/images/[^/]+/thumbnail-[a-f0-9]{32}\.webp$" "public-thumbnail";
+    "~^/images/[^/]+/[^/]+/_v4/[a-f0-9]{20}(?:/w[0-9]+)?/[0-9]{4}\.mrt$" "tilepack-v4-immutable";
+}
+upstream reader_auth { server ${READER_AUTH_HOST}:${READER_AUTH_PORT}; keepalive 64; }
+upstream seaweed_filer { server ${NAS_SEAWEEDFS_HOST}:${NAS_SEAWEEDFS_PORT}; keepalive 64; }
+server {
+    listen 8080 reuseport;
+    server_name _;
+    access_log /dev/stdout;
+    error_log /dev/stderr warn;
+    location = /health { access_log off; default_type application/json; return 200 '{"status":"ok","service":"image-edge"}\n'; }
+    location = /ready {
+        access_log off; proxy_pass http://reader_auth/internal/image-auth/ready; proxy_pass_request_body off;
+        proxy_set_header Content-Length ""; proxy_http_version 1.1; proxy_set_header Connection "";
+        proxy_connect_timeout 2s; proxy_send_timeout 5s; proxy_read_timeout 5s;
+    }
+    location = /_image_auth {
+        internal; proxy_pass http://reader_auth/internal/image-auth; proxy_pass_request_body off;
+        proxy_set_header Content-Length ""; proxy_set_header X-Original-URI $request_uri;
+        proxy_set_header Cookie $http_cookie; proxy_set_header Authorization $http_authorization;
+        proxy_set_header Origin $http_origin; proxy_set_header Referer $http_referer;
+        proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme; proxy_http_version 1.1; proxy_set_header Connection "";
+        proxy_connect_timeout 2s; proxy_send_timeout 5s; proxy_read_timeout 5s;
+    }
+    location ^~ /images/ {
+        access_log off;
+        auth_request /_image_auth;
+        proxy_cache mreader_images; proxy_cache_key "$request_method:$uri"; proxy_cache_lock on;
+        proxy_cache_lock_timeout 10s; proxy_cache_lock_age 10s; proxy_cache_background_update on;
+        proxy_cache_revalidate on; proxy_cache_use_stale error timeout invalid_header updating http_500 http_502 http_503 http_504;
+        proxy_cache_valid 200 365d;
+        rewrite ^/images/(.*)$ /$1? break; proxy_pass http://seaweed_filer;
+        proxy_http_version 1.1; proxy_set_header Connection ""; proxy_set_header Host $proxy_host;
+        proxy_connect_timeout 3s; proxy_send_timeout 30s; proxy_read_timeout 60s;
+        proxy_buffering on; proxy_buffers 16 64k; proxy_buffer_size 64k; proxy_busy_buffers_size 128k;
+        proxy_hide_header Set-Cookie; proxy_hide_header Cache-Control; proxy_hide_header Expires;
+        add_header X-MReader-Image-Cache $upstream_cache_status always;
+        add_header X-MReader-Asset-Class $mreader_asset_class always;
+        add_header X-Content-Type-Options nosniff always;
+        add_header Access-Control-Allow-Origin "*" always;
+        add_header Cross-Origin-Resource-Policy "cross-origin" always;
+        add_header Cache-Control $mreader_cache_control always;
+    }
+}

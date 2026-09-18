@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Debug APKs may connect to emulator/LAN HTTP gateways for local testing.
+         Release builds continue to use src/main and reject cleartext traffic. -->
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

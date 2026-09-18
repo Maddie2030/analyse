@@ -1,0 +1,22 @@
+#!/bin/sh
+set -eu
+
+IMAGE_CDN_SEND_CREDENTIALS_VALUE=${IMAGE_CDN_SEND_CREDENTIALS:-false}
+IMAGE_CDN_URL_ESCAPED=$(printf '%s' "${IMAGE_CDN_URL:-}" | sed 's/\\/\\\\/g; s/"/\\"/g')
+READER_FETCH_BEHIND_VALUE=${READER_FETCH_BEHIND:-1}
+READER_FETCH_AHEAD_VALUE=${READER_FETCH_AHEAD:-2}
+READER_RETAIN_BEHIND_VALUE=${READER_RETAIN_BEHIND:-${READER_PRELOAD_BEHIND:-2}}
+READER_RETAIN_AHEAD_VALUE=${READER_RETAIN_AHEAD:-${READER_PRELOAD_AHEAD:-4}}
+ADMIN_PLANE_VALUE=${MREADER_ADMIN_PLANE:-false}
+
+cat > /usr/share/nginx/html/runtime-config.js <<CONFIG
+window.__MREADER_CONFIG__ = {
+  imageCdnUrl: "${IMAGE_CDN_URL_ESCAPED}",
+  imageCdnSendCredentials: "${IMAGE_CDN_SEND_CREDENTIALS_VALUE}" === "true",
+  readerFetchBehind: Number("${READER_FETCH_BEHIND_VALUE}"),
+  readerFetchAhead: Number("${READER_FETCH_AHEAD_VALUE}"),
+  readerRetainBehind: Number("${READER_RETAIN_BEHIND_VALUE}"),
+  readerRetainAhead: Number("${READER_RETAIN_AHEAD_VALUE}"),
+  adminPlane: "${ADMIN_PLANE_VALUE}" === "true"
+};
+CONFIG

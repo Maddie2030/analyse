@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mreader://contracts/ownership/routes.schema.v1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract", "version", "generated_from", "routes"],
+  "properties": {
+    "contract": {"const": "mreader.ownership-routes"},
+    "version": {"const": 1},
+    "generated_from": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["route_coverage", "user_gateway", "admin_gateway"],
+      "properties": {
+        "route_coverage": {"type": "string", "minLength": 1},
+        "user_gateway": {"type": "string", "minLength": 1},
+        "admin_gateway": {"type": "string", "minLength": 1}
+      }
+    },
+    "routes": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/route"}}
+  },
+  "$defs": {
+    "authentication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "principal", "required_role", "credential_scope"],
+      "properties": {
+        "mode": {"enum": ["none", "session", "admin-session", "workload-token", "chapter-grant", "mixed"]},
+        "principal": {"enum": ["anonymous", "user", "admin", "workload", "chapter-reader", "mixed"]},
+        "required_role": {"type": ["string", "null"]},
+        "credential_scope": {"type": ["string", "null"]}
+      }
+    },
+    "write": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "resource", "actions"],
+      "properties": {
+        "kind": {"enum": ["postgres", "event", "seaweedfs", "cache", "filesystem", "external-http"]},
+        "resource": {"type": "string", "minLength": 1},
+        "actions": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+      }
+    },
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "name"],
+      "properties": {
+        "kind": {"enum": ["service", "postgres", "cache", "event-bus", "seaweedfs", "filesystem", "external-http"]},
+        "name": {"type": "string", "minLength": 1}
+      }
+    },
+    "consumer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "name"],
+      "properties": {
+        "kind": {"enum": ["web", "android", "admin-web", "service", "operator"]},
+        "name": {"type": "string", "minLength": 1}
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["direction", "name"],
+      "properties": {
+        "direction": {"enum": ["publish", "consume", "request"]},
+        "name": {"type": "string", "minLength": 1}
+      }
+    },
+    "route": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operation", "method", "path", "lifecycle", "access_plane", "owner", "handler", "version",
+        "authentication", "permitted_writes", "dependencies", "consumers", "events", "acceptance_test_ids", "evidence"
+      ],
+      "properties": {
+        "operation": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
+        "method": {"enum": ["GET", "POST", "PUT", "PATCH", "DELETE"]},
+        "path": {"type": "string", "minLength": 1},
+        "lifecycle": {"const": "current"},
+        "access_plane": {"enum": ["public", "admin", "both", "internal"]},
+        "owner": {"type": "string", "minLength": 1},
+        "handler": {"type": "string", "minLength": 3},
+        "version": {"type": "string", "pattern": "^v[0-9]+$"},
+        "authentication": {"$ref": "#/$defs/authentication"},
+        "permitted_writes": {"type": "array", "items": {"$ref": "#/$defs/write"}},
+        "dependencies": {"type": "array", "items": {"$ref": "#/$defs/dependency"}},
+        "consumers": {"type": "array", "items": {"$ref": "#/$defs/consumer"}},
+        "events": {"type": "array", "items": {"$ref": "#/$defs/event"}},
+        "acceptance_test_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[A-Z]+-[0-9]{2}$"}},
+        "evidence": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  }
+}

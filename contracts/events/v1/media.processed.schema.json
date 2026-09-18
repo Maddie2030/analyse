@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "media.processed v1 payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["job_id", "status", "processed_at"],
+  "properties": {
+    "job_id": {"type": "string", "minLength": 1},
+    "series_id": {"type": ["string", "null"], "format": "uuid"},
+    "chapter_id": {"type": ["string", "null"], "format": "uuid"},
+    "status": {"type": "string", "enum": ["processed", "failed"]},
+    "output_paths": {"type": "array", "items": {"type": "string"}},
+    "error": {"type": ["string", "null"]},
+    "processed_at": {"type": "string", "format": "date-time"}
+  }
+}

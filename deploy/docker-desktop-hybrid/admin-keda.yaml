@@ -1,0 +1,339 @@
+# RC4.47 workload-aware autoscaling.
+#
+# Queue consumers use RabbitMQ's management API so QueueLength includes both
+# ready and unacknowledged (in-flight) deliveries. This prevents KEDA from
+# scaling a long-running worker to zero simply because it claimed the last
+# ready message. PostgreSQL triggers are recovery-only wake signals for durable
+# work that exists in the DB but has no live broker delivery.
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: scraper-batch-worker
+  namespace: mreader-admin
+  labels:
+    mreader.io/plane: admin
+spec:
+  scaleTargetRef:
+    name: scraper-batch-worker
+    envSourceContainerName: scraper-batch-worker
+  pollingInterval: 15
+  cooldownPeriod: 90
+  minReplicaCount: 0
+  maxReplicaCount: 2
+  fallback:
+    failureThreshold: 3
+    replicas: 1
+  triggers:
+  - type: rabbitmq
+    metadata:
+      hostFromEnv: KEDA_RABBITMQ_HTTP_URL
+      usernameFromEnv: RABBITMQ_USER
+      passwordFromEnv: RABBITMQ_PASSWORD
+      protocol: http
+      queueName: mreader.scraper.batch
+      mode: QueueLength
+      value: '4'
+      activationValue: '0'
+      excludeUnacknowledged: 'false'
+      timeout: '3000'
+  - type: postgresql
+    metadata:
+      connectionFromEnv: KEDA_POSTGRES_URL
+      targetQueryValue: '1'
+      activationTargetQueryValue: '0'
+      query: >-
+        SELECT CASE WHEN
+          EXISTS (
+            SELECT 1 FROM scraper_batch_items i
+            WHERE (i.status='queued' AND i.queue_dispatched_at IS NULL)
+               OR (i.status='processing' AND COALESCE(i.processing_heartbeat_at,i.processing_started_at,i.updated_at) < NOW() - INTERVAL '180 seconds')
+          )
+          OR EXISTS (
+            SELECT 1 FROM scraper_storage_attempts a
+            WHERE a.batch_item_id IS NOT NULL
+              AND a.status='active'
+              AND a.heartbeat_at < NOW() - INTERVAL '300 seconds'
+          )
+          OR EXISTS (
+            SELECT 1 FROM scraper_storage_attempts a
+            JOIN lifecycle_cleanup_jobs j ON j.id=a.cleanup_job_id
+            WHERE a.batch_item_id IS NOT NULL
+              AND a.status='cleanup_queued'
+              AND j.status='completed'
+          )
+        THEN 1 ELSE 0 END
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: scraper-series-worker
+  namespace: mreader-admin
+  labels:
+    mreader.io/plane: admin
+spec:
+  scaleTargetRef:
+    name: scraper-series-worker
+    envSourceContainerName: scraper-series-worker
+  pollingInterval: 15
+  cooldownPeriod: 90
+  minReplicaCount: 0
+  maxReplicaCount: 2
+  fallback:
+    failureThreshold: 3
+    replicas: 1
+  triggers:
+  - type: rabbitmq
+    metadata:
+      hostFromEnv: KEDA_RABBITMQ_HTTP_URL
+      usernameFromEnv: RABBITMQ_USER
+      passwordFromEnv: RABBITMQ_PASSWORD
+      protocol: http
+      queueName: mreader.scraper.discovery
+      mode: QueueLength
+      value: '2'
+      excludeUnacknowledged: 'false'
+      timeout: '3000'
+  - type: rabbitmq
+    metadata:
+      hostFromEnv: KEDA_RABBITMQ_HTTP_URL
+      usernameFromEnv: RABBITMQ_USER
+      passwordFromEnv: RABBITMQ_PASSWORD
+      protocol: http
+      queueName: mreader.scraper.stage
+      mode: QueueLength
+      value: '2'
+      excludeUnacknowledged: 'false'
+      timeout: '3000'
+  - type: rabbitmq
+    metadata:
+      hostFromEnv: KEDA_RABBITMQ_HTTP_URL
+      usernameFromEnv: RABBITMQ_USER
+      passwordFromEnv: RABBITMQ_PASSWORD
+      protocol: http
+      queueName: mreader.scraper.publish
+      mode: QueueLength
+      value: '1'
+      excludeUnacknowledged: 'false'
+      timeout: '3000'
+  - type: rabbitmq
+    metadata:
+      hostFromEnv: KEDA_RABBITMQ_HTTP_URL
+      usernameFromEnv: RABBITMQ_USER
+      passwordFromEnv: RABBITMQ_PASSWORD
+      protocol: http
+      queueName: mreader.scraper.chapter-publish
+      mode: QueueLength
+      value: '1'
+      excludeUnacknowledged: 'false'
+      timeout: '3000'
+  - type: postgresql
+    metadata:
+      connectionFromEnv: KEDA_POSTGRES_URL
+      targetQueryValue: '1'
+      activationTargetQueryValue: '0'
+      query: >-
+        SELECT CASE WHEN
+          EXISTS (
+            SELECT 1 FROM scraper_series_drafts d
+            WHERE (d.operation_cancel_requested_at IS NOT NULL AND d.workflow_status='cancel_requested')
+               OR (
+                    d.operation_cancel_requested_at IS NULL
+                    AND (
+                      (d.workflow_status='queued_discovery' AND d.queue_dispatched_at IS NULL)
+                      OR (d.workflow_status='discovering' AND COALESCE(d.discovery_worker_heartbeat_at,d.updated_at) < NOW() - INTERVAL '90 seconds')
+                      OR (d.workflow_status='queued_publish' AND d.queue_dispatched_at IS NULL)
+                      OR (d.workflow_status='publishing' AND COALESCE(d.publish_worker_heartbeat_at,d.updated_at) < NOW() - INTERVAL '120 seconds')
+                    )
+                  )
+          )
+          OR EXISTS (
+            SELECT 1
+            FROM scraper_series_draft_chapters c
+            JOIN scraper_series_drafts d ON d.id=c.draft_id
+            WHERE d.operation_cancel_requested_at IS NULL
+              AND (
+                (c.stage_status='queued' AND c.queue_dispatched_at IS NULL)
+                OR (c.stage_status='staging' AND COALESCE(c.stage_worker_heartbeat_at,c.updated_at) < NOW() - INTERVAL '120 seconds')
+                OR (
+                  c.published_chapter_id IS NULL
+                  AND c.stage_status='ready'
+                  AND COALESCE(c.publish_progress->>'mode','')='single'
+                  AND d.workflow_status NOT IN ('queued_publish','publishing','duplicate','cancel_requested')
+                  AND (
+                    (c.publish_status='pending' AND c.queue_dispatched_at IS NULL)
+                    OR (c.publish_status='publishing' AND c.updated_at < NOW() - INTERVAL '120 seconds')
+                  )
+                )
+              )
+          )
+          OR EXISTS (
+            SELECT 1 FROM scraper_storage_attempts a
+            WHERE a.draft_id IS NOT NULL
+              AND a.status='active'
+              AND a.heartbeat_at < NOW() - INTERVAL '300 seconds'
+          )
+          OR EXISTS (
+            SELECT 1 FROM scraper_storage_attempts a
+            JOIN lifecycle_cleanup_jobs j ON j.id=a.cleanup_job_id
+            WHERE a.draft_id IS NOT NULL
+              AND a.status='cleanup_queued'
+              AND j.status='completed'
+          )
+        THEN 1 ELSE 0 END
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: media-worker
+  namespace: mreader-admin
+  labels:
+    mreader.io/plane: admin
+spec:
+  scaleTargetRef:
+    name: media-worker
+    envSourceContainerName: media-worker
+  pollingInterval: 15
+  cooldownPeriod: 90
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  fallback:
+    failureThreshold: 3
+    replicas: 1
+  triggers:
+  - type: rabbitmq
+    metadata:
+      hostFromEnv: KEDA_RABBITMQ_HTTP_URL
+      usernameFromEnv: RABBITMQ_USER
+      passwordFromEnv: RABBITMQ_PASSWORD
+      protocol: http
+      queueName: mreader.media.chapter
+      mode: QueueLength
+      value: '1'
+      excludeUnacknowledged: 'false'
+      timeout: '3000'
+  - type: postgresql
+    metadata:
+      connectionFromEnv: KEDA_POSTGRES_URL
+      targetQueryValue: '1'
+      activationTargetQueryValue: '0'
+      query: >-
+        SELECT CASE WHEN EXISTS (
+          SELECT 1 FROM media_operations
+          WHERE job_type='chapter-ingestion'
+            AND (
+              (status IN ('queued','retry') AND queue_dispatched_at IS NULL)
+              OR (status='processing' AND COALESCE(processing_heartbeat_at,processing_started_at,updated_at) < NOW() - INTERVAL '120 seconds')
+            )
+        ) THEN 1 ELSE 0 END
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: media-thumbnail-worker
+  namespace: mreader-admin
+  labels:
+    mreader.io/plane: admin
+spec:
+  scaleTargetRef:
+    name: media-thumbnail-worker
+    envSourceContainerName: media-thumbnail-worker
+  pollingInterval: 15
+  cooldownPeriod: 60
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  fallback:
+    failureThreshold: 3
+    replicas: 1
+  triggers:
+  - type: rabbitmq
+    metadata:
+      hostFromEnv: KEDA_RABBITMQ_HTTP_URL
+      usernameFromEnv: RABBITMQ_USER
+      passwordFromEnv: RABBITMQ_PASSWORD
+      protocol: http
+      queueName: mreader.media.thumbnail
+      mode: QueueLength
+      value: '4'
+      excludeUnacknowledged: 'false'
+      timeout: '3000'
+  - type: postgresql
+    metadata:
+      connectionFromEnv: KEDA_POSTGRES_URL
+      targetQueryValue: '1'
+      activationTargetQueryValue: '0'
+      query: >-
+        SELECT CASE WHEN EXISTS (
+          SELECT 1 FROM media_operations
+          WHERE job_type='thumbnail-generation'
+            AND (
+              (status IN ('queued','retry') AND queue_dispatched_at IS NULL)
+              OR (status='processing' AND COALESCE(processing_heartbeat_at,processing_started_at,updated_at) < NOW() - INTERVAL '120 seconds')
+            )
+        ) THEN 1 ELSE 0 END
+---
+# The event outbox relay is pure background work. PostgreSQL itself wakes it
+# only while an event is due or currently claimed, so it consumes no pod
+# resources when the outbox is empty or waiting for a future retry time.
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: outbox-relay
+  namespace: mreader-admin
+  labels:
+    mreader.io/plane: admin
+spec:
+  scaleTargetRef:
+    name: outbox-relay
+    envSourceContainerName: outbox-relay
+  pollingInterval: 5
+  cooldownPeriod: 20
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  fallback:
+    failureThreshold: 3
+    replicas: 1
+  triggers:
+  - type: postgresql
+    metadata:
+      connectionFromEnv: KEDA_POSTGRES_URL
+      targetQueryValue: '1'
+      activationTargetQueryValue: '0'
+      query: >-
+        SELECT CASE WHEN EXISTS (
+          SELECT 1 FROM event_outbox
+          WHERE published_at IS NULL
+            AND (locked_at IS NOT NULL OR available_at <= NOW())
+        ) THEN 1 ELSE 0 END
+---
+# Lifecycle cleanup is also a durable DB-backed queue. Future retry rows do not
+# keep a pod idle; KEDA wakes the worker when next_attempt_at becomes due.
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: lifecycle-worker
+  namespace: mreader-admin
+  labels:
+    mreader.io/plane: admin
+spec:
+  scaleTargetRef:
+    name: lifecycle-worker
+    envSourceContainerName: lifecycle-worker
+  pollingInterval: 15
+  cooldownPeriod: 30
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  fallback:
+    failureThreshold: 3
+    replicas: 1
+  triggers:
+  - type: postgresql
+    metadata:
+      connectionFromEnv: KEDA_POSTGRES_URL
+      targetQueryValue: '1'
+      activationTargetQueryValue: '0'
+      query: >-
+        SELECT CASE WHEN EXISTS (
+          SELECT 1 FROM lifecycle_cleanup_jobs
+          WHERE status='processing'
+             OR (status IN ('queued','retry') AND next_attempt_at <= NOW())
+        ) THEN 1 ELSE 0 END

@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+set -eu
+GRADLE_VERSION="9.6.0"
+CACHE_DIR="${GRADLE_USER_HOME:-$HOME/.gradle}/mreader-bootstrap/gradle-${GRADLE_VERSION}"
+GRADLE_BIN="$CACHE_DIR/gradle-${GRADLE_VERSION}/bin/gradle"
+if command -v gradle >/dev/null 2>&1; then
+  exec gradle "$@"
+fi
+if [ ! -x "$GRADLE_BIN" ]; then
+  mkdir -p "$CACHE_DIR"
+  ZIP="$CACHE_DIR/gradle.zip"
+  URL="https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip"
+  echo "Gradle not found; downloading ${URL}" >&2
+  if command -v curl >/dev/null 2>&1; then curl -fL "$URL" -o "$ZIP"; else wget -O "$ZIP" "$URL"; fi
+  unzip -q -o "$ZIP" -d "$CACHE_DIR"
+  rm -f "$ZIP"
+fi
+exec "$GRADLE_BIN" "$@"

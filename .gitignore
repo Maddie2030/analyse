@@ -1,0 +1,35 @@
+# Local secrets and generated CI state
+deploy/platform/cicd/bootstrap.env
+*.tfvars
+*.tfvars.json
+**/.terraform/
+**/terraform.tfstate
+**/terraform.tfstate.*
+.terraform.lock.hcl
+.ci-artifacts/
+.ci-tools/
+cosign.key
+*.cosign.key
+
+# Common generated files
+__pycache__/
+*.pyc
+node_modules/
+dist/
+build/
+.DS_Store
+
+.platform-state/
+
+# Runtime scraper spool (durable local data, never source-controlled)
+data/scraper-staging/
+
+# Local runtime/public-edge state
+.env
+.env.corrupt.*
+.env.tmp.*
+.runtime/
+
+# Generated development/navigation graphs
+/graphify-out/
+/development-reference/

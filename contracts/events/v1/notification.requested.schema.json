@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "notification.requested v1 payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["recipient_user_id", "kind", "message", "dedupe_key", "requested_at"],
+  "properties": {
+    "recipient_user_id": {"type": "string", "format": "uuid"},
+    "kind": {"type": "string", "minLength": 1, "maxLength": 64},
+    "message": {"type": "string", "minLength": 1, "maxLength": 2000},
+    "series_id": {"type": ["string", "null"], "format": "uuid"},
+    "chapter_id": {"type": ["string", "null"], "format": "uuid"},
+    "dedupe_key": {"type": "string", "minLength": 1, "maxLength": 255},
+    "requested_at": {"type": "string", "format": "date-time"}
+  }
+}

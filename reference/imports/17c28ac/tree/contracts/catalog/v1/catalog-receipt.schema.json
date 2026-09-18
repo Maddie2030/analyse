@@ -1,0 +1,61 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "idempotency_key",
+    "operation_id",
+    "actor_id",
+    "payload_sha256",
+    "series_id",
+    "chapter_id",
+    "chapter_revision",
+    "series_revision",
+    "page_count",
+    "publication_event_id"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "status": {
+      "const": "committed"
+    },
+    "idempotency_key": {
+      "$ref": "types.schema.json#/$defs/uuid"
+    },
+    "operation_id": {
+      "$ref": "types.schema.json#/$defs/uuid"
+    },
+    "actor_id": {
+      "$ref": "types.schema.json#/$defs/uuid"
+    },
+    "payload_sha256": {
+      "$ref": "types.schema.json#/$defs/sha256"
+    },
+    "series_id": {
+      "$ref": "types.schema.json#/$defs/uuid"
+    },
+    "chapter_id": {
+      "$ref": "types.schema.json#/$defs/uuid"
+    },
+    "chapter_revision": {
+      "$ref": "types.schema.json#/$defs/positive"
+    },
+    "series_revision": {
+      "$ref": "types.schema.json#/$defs/positive"
+    },
+    "page_count": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4096
+    },
+    "publication_event_id": {
+      "$ref": "types.schema.json#/$defs/uuid"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Durable Catalog publication receipt v1"
+}

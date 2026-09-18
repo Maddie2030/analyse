@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mreader.local/contracts/session/v1/session.schema.json",
+  "title": "MReader Redis Session v1",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["version", "user_id", "username", "role", "is_active", "created_at"],
+  "properties": {
+    "version": { "const": 1 },
+    "user_id": { "type": "string", "format": "uuid" },
+    "username": { "type": "string", "minLength": 1, "maxLength": 100 },
+    "role": { "type": "string", "enum": ["user", "admin"] },
+    "is_active": { "type": "boolean" },
+    "created_at": { "type": "string", "format": "date-time" }
+  }
+}

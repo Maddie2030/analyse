@@ -1,0 +1,86 @@
+[
+  {
+    "check": "hybrid-volume-ownership.sh",
+    "exit_code": 0,
+    "stdout": "hybrid explicit volume ownership/adoption regression PASSED\n",
+    "stderr": ""
+  },
+  {
+    "check": "hybrid-volume-adoption-runtime.sh",
+    "exit_code": 0,
+    "stdout": "hybrid stateful volume adoption runtime regression PASSED\n",
+    "stderr": "WARN: both PostgreSQL volumes are valid; preferring legacy volume 'mreader-hybrid-stateful_pgdata' for upgrade continuity.\n"
+  },
+  {
+    "check": "hybrid-legacy-volume-priority.sh",
+    "exit_code": 0,
+    "stdout": "hybrid legacy-volume priority regression PASSED\n",
+    "stderr": "WARN: both PostgreSQL volumes are valid; preferring legacy volume 'mreader-hybrid-stateful_pgdata' for upgrade continuity.\nWARN: both HYBRID_REDIS_VOLUME_NAME volumes contain data; preferring legacy volume 'mreader-hybrid-stateful_redis_data' for upgrade continuity.\nWARN: both HYBRID_RABBITMQ_VOLUME_NAME volumes contain data; preferring legacy volume 'mreader-hybrid-stateful_rabbitmq_data' for upgrade continuity.\nWARN: both HYBRID_IMAGE_CACHE_VOLUME_NAME volumes contain data; preferring legacy volume 'mreader-hybrid-stateful_image_cache' for upgrade continuity.\n"
+  },
+  {
+    "check": "hybrid-legacy-volume-authority.sh",
+    "exit_code": 0,
+    "stdout": "hybrid legacy-volume authority regression PASSED\n",
+    "stderr": ""
+  },
+  {
+    "check": "hybrid-preupgrade-backup-order.sh",
+    "exit_code": 0,
+    "stdout": "hybrid pre-upgrade backup ordering regression PASSED (backup line 18 < migration line 43)\n",
+    "stderr": ""
+  },
+  {
+    "check": "hybrid-pg-volume-inspection-static.sh",
+    "exit_code": 0,
+    "stdout": "hybrid PostgreSQL volume inspection static regression PASSED\n",
+    "stderr": ""
+  },
+  {
+    "check": "bootstrap-fresh-env.sh",
+    "exit_code": 0,
+    "stdout": "bootstrap fresh-env regression: PASS\n",
+    "stderr": ""
+  },
+  {
+    "check": "rc484-upgrade-recovery-static.sh",
+    "exit_code": 0,
+    "stdout": "RC4.84 upgrade/recovery/static contract passed\n",
+    "stderr": ""
+  },
+  {
+    "check": "twin-plane-resource-budget.sh",
+    "exit_code": 0,
+    "stdout": "PASS two-series-workers: limits=3776Mi/6656Mi requests=1408Mi/3072Mi\nPASS two-batch-workers: limits=3776Mi/6656Mi requests=1280Mi/3072Mi\nPASS two-series-plus-media: limits=5312Mi/6656Mi requests=1792Mi/3072Mi\nPASS one-each-plus-thumbnail: limits=5824Mi/6656Mi requests=1888Mi/3072Mi\ntwin-plane resource budget regression PASSED\n",
+    "stderr": ""
+  },
+  {
+    "check": "dependency-pins.sh",
+    "exit_code": 0,
+    "stdout": "dependency pin regression PASSED\n",
+    "stderr": ""
+  },
+  {
+    "check": "dockerfile-static.sh",
+    "exit_code": 0,
+    "stdout": "dockerfile static regression PASSED\n",
+    "stderr": ""
+  },
+  {
+    "check": "hybrid-no-host-python.sh",
+    "exit_code": 0,
+    "stdout": "hybrid no-host-python regression PASSED\n",
+    "stderr": ""
+  },
+  {
+    "check": "workload-aware-scale-to-zero.sh",
+    "exit_code": 0,
+    "stdout": "workload-aware scale-to-zero regression PASSED\n",
+    "stderr": ""
+  },
+  {
+    "check": "production-backup-preflight-assertions",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+]

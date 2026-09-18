@@ -1,0 +1,29 @@
+FROM mcr.microsoft.com/playwright/python:v1.62.0-noble@sha256:aa81288e738725378becba5b3e06cb0f3a7f012a610e87e8d767a090ea3f740d
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    MALLOC_ARENA_MAX=2 \
+    PIP_NO_CACHE_DIR=1 \
+    PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \
+    MREADER_BROWSER_LOCAL_RUNTIME=1
+
+WORKDIR /app
+
+RUN groupadd --gid 10001 app && \
+    useradd --uid 10001 --gid app --create-home --shell /usr/sbin/nologin app
+
+COPY services/scraper_service/requirements-browser.txt ./requirements.txt
+RUN pip install -r requirements.txt && \
+    chmod -R a+rX /ms-playwright && \
+    rm -rf /tmp/* /var/tmp/*
+
+# browser_service imports app.security, which validates the shared session
+# contract. Install the same package as the normal scraper image.
+COPY shared /shared
+RUN pip install --no-deps -e /shared
+
+COPY --chown=app:app services/scraper_service/app ./app
+
+USER app
+EXPOSE 8010
+CMD ["uvicorn", "app.browser_service:app", "--host", "0.0.0.0", "--port", "8010", "--workers", "1", "--no-access-log"]

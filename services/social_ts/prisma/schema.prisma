@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("SOCIAL_DATABASE_URL")
+}
+
+model User {
+  id       String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  username String
+  comments Comment[]
+
+  @@map("users")
+}
+
+model Series {
+  id             String         @id @db.Uuid
+  title          String
+  slug           String
+  coverImagePath String?        @map("cover_image_path")
+  status         String
+  bookmarks      Bookmark[]
+  subscriptions  Subscription[]
+  comments       Comment[]
+  notifications  Notification[]
+
+  @@map("series")
+}
+
+model Chapter {
+  id            String         @id @db.Uuid
+  seriesId      String         @map("series_id") @db.Uuid
+  chapterNumber Decimal        @map("chapter_number") @db.Decimal
+  slug          String
+  comments      Comment[]
+  notifications Notification[]
+
+  @@map("chapters")
+}
+
+model Bookmark {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  seriesId  String   @map("series_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  series    Series   @relation(fields: [seriesId], references: [id])
+
+  @@unique([userId, seriesId], map: "uq_bookmarks_user_series")
+  @@map("bookmarks")
+}
+
+model Subscription {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  seriesId  String   @map("series_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  series    Series   @relation(fields: [seriesId], references: [id])
+
+  @@unique([userId, seriesId], map: "uq_subscriptions_user_series")
+  @@map("subscriptions")
+}
+
+model Comment {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  seriesId  String    @map("series_id") @db.Uuid
+  chapterId String?   @map("chapter_id") @db.Uuid
+  parentId  String?   @map("parent_id") @db.Uuid
+  content   String
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  user      User      @relation(fields: [userId], references: [id])
+  series    Series    @relation(fields: [seriesId], references: [id])
+  chapter   Chapter?  @relation(fields: [chapterId], references: [id])
+
+  @@map("comments")
+}
+
+model Notification {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  seriesId      String?  @map("series_id") @db.Uuid
+  chapterId     String?  @map("chapter_id") @db.Uuid
+  message       String
+  isRead        Boolean  @map("is_read")
+  createdAt     DateTime @default(now()) @map("created_at")
+  sourceEventId String?  @map("source_event_id") @db.Uuid
+  kind          String
+  dedupeKey     String?  @map("dedupe_key")
+  series        Series?  @relation(fields: [seriesId], references: [id])
+  chapter       Chapter? @relation(fields: [chapterId], references: [id])
+
+  @@map("notifications")
+}
+
+
+model SeriesRating {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  seriesId  String   @map("series_id") @db.Uuid
+  rating    Int      @db.SmallInt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@unique([userId, seriesId], map: "uq_series_ratings_user_series")
+  @@index([seriesId], map: "ix_series_ratings_series_id")
+  @@map("series_ratings")
+}

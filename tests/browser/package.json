@@ -1,0 +1,12 @@
+{
+  "name": "mreader-browser-regression",
+  "private": true,
+  "version": "1.3.0-rc4.84",
+  "devDependencies": {
+    "@playwright/test": "1.62.0",
+    "pg": "8.16.3"
+  },
+  "scripts": {
+    "test": "playwright test --reporter=line,json"
+  }
+}

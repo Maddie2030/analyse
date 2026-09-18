@@ -1,0 +1,699 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  namespace: mreader-user
+  labels:
+    mreader.io/plane: user
+spec:
+  selector:
+    matchLabels: &id001
+      app: auth-service
+      part-of: mreader
+      mreader.io/plane: user
+  template:
+    metadata:
+      labels: *id001
+    spec:
+      containers:
+      - name: auth-service
+        image: mreader/auth-service:v1.3.0-rc4.84
+        imagePullPolicy: Never
+        envFrom:
+        - secretRef:
+            name: mreader-env-auth-service
+        resources:
+          requests:
+            memory: 160Mi
+            cpu: 100m
+          limits:
+            memory: 384Mi
+            cpu: 500m
+        env:
+        - name: DB_POOL_SIZE
+          value: '2'
+        - name: DB_MAX_OVERFLOW
+          value: '1'
+        - name: COOKIE_SECURE
+          valueFrom:
+            secretKeyRef:
+              name: mreader-public-edge
+              key: COOKIE_SECURE
+        ports:
+        - name: http
+          containerPort: 8000
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 6
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 6
+      terminationGracePeriodSeconds: 30
+      enableServiceLinks: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+  namespace: mreader-user
+  labels:
+    mreader.io/plane: user
+spec:
+  selector:
+    app: auth-service
+    part-of: mreader
+  ports:
+  - name: http
+    port: 8000
+    targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog-go
+  namespace: mreader-user
+  labels:
+    mreader.io/plane: user
+spec:
+  selector:
+    matchLabels: &id001
+      app: catalog-go
+      part-of: mreader
+      mreader.io/plane: user
+  template:
+    metadata:
+      labels: *id001
+    spec:
+      containers:
+      - name: catalog-go
+        image: mreader/catalog-go:v1.3.0-rc4.84
+        imagePullPolicy: Never
+        envFrom:
+        - secretRef:
+            name: mreader-env-catalog-go
+        resources:
+          requests:
+            memory: 128Mi
+            cpu: 100m
+          limits:
+            memory: 256Mi
+            cpu: 750m
+        env:
+        - name: CATALOG_GO_DB_MAX_CONNS
+          value: '3'
+        - name: CATALOG_GO_REDIS_ADDR
+          value: redis:6379
+        - name: CATALOG_GO_CACHE_REDIS_ADDR
+          value: redis-cache:6380
+        - name: CATALOG_GO_PORT
+          value: '8080'
+        - name: CATALOG_GO_ENABLE_WRITES
+          value: 'false'
+        ports:
+        - name: http
+          containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 6
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 6
+      terminationGracePeriodSeconds: 30
+      enableServiceLinks: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalog-go
+  namespace: mreader-user
+  labels:
+    mreader.io/plane: user
+spec:
+  selector:
+    app: catalog-go
+    part-of: mreader
+  ports:
+  - name: http
+    port: 8080
+    targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reader-go
+  namespace: mreader-user
+  labels:
+    mreader.io/plane: user
+spec:
+  selector:
+    matchLabels: &id001
+      app: reader-go
+      part-of: mreader
+      mreader.io/plane: user
+  template:
+    metadata:
+      labels: *id001
+    spec:
+      containers:
+      - name: reader-go
+        image: mreader/reader-go:v1.3.0-rc4.84
+        imagePullPolicy: Never
+        envFrom:
+        - secretRef:
+            name: mreader-env-reader-go
+        resources:
+          requests:
+            memory: 192Mi
+            cpu: 150m
+          limits:
+            memory: 384Mi
+            cpu: '1'
+        env:
+        - name: READER_GO_DB_MAX_CONNS
+          value: '4'
+        - name: READER_GO_REDIS_ADDR
+          value: redis:6379
+        - name: READER_GO_CACHE_REDIS_ADDR
+          value: redis-cache:6380
+        - name: ALLOWED_ORIGIN
+          valueFrom:
+            secretKeyRef:
+              name: mreader-public-edge
+              key: ALLOWED_ORIGIN
+        - name: READER_GO_PORT
+          value: '8080'
+        ports:
+        - name: http
+          containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 6
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 6
+      terminationGracePeriodSeconds: 30
+      enableServiceLinks: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reader-go
+  namespace: mreader-user
+  labels:
+    mreader.io/plane: user
+spec:
+  selector:
+    app: reader-go
+    part-of: mreader
+  ports:
+  - name: http
+    port: 8080
+    targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: progress-go
+  namespace: mreader-user
+  labels:
+    mreader.io/plane: user
+spec:
+  selector:
+    matchLabels: &id001
+      app: progress-go
+      part-of: mreader
+      mreader.io/plane: user
+  template:
+    metadata:
+      labels: *id001
+    spec:
+      containers:
+      - name: progress-go
+        image: mreader/progress-go:v1.3.0-rc4.84
+        imagePullPolicy: Never
+        envFrom:
+        - secretRef:
+            name: mreader-env-progress-go
+        resources:
+          requests:
+            memory: 128Mi
+            cpu: 75m
+          limits:
+            memory: 256Mi
+            cpu: 500m
+        env:
+        - name: PROGRESS_GO_DB_MAX_CONNS
+          value: '2'
+        - name: PROGRESS_GO_REDIS_ADDR
+          value: redis:6379
+        - name: PROGRESS_GO_CACHE_REDIS_ADDR
+          value: redis-cache:6380
+        - name: PROGRESS_GO_PORT
+          value: '8080'
+        ports:
+        - name: http
+          containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 6
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 6
+      terminationGracePeriodSeconds: 30
+      enableServiceLinks: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: progress-go
+  namespace: mreader-user
+  labels:
+    mreader.io/plane: user
+spec:
+  selector:
+    app: progress-go
+    part-of: mreader
+  ports:
+  - name: http
+    port: 8080
+    targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: social-ts
+  namespace: mreader-user
+  labels:
+    mreader.io/plane: user
+spec:
+  selector:
+    matchLabels: &id001
+      app: social-ts
+      part-of: mreader
+      mreader.io/plane: user
+  template:
+    metadata:
+      labels: *id001
+    spec:
+      containers:
+      - name: social-ts
+        image: mreader/social-ts:v1.3.0-rc4.84
+        imagePullPolicy: Never
+        envFrom:
+        - secretRef:
+            name: mreader-env-social-ts
+        resources:
+          requests:
+            memory: 224Mi
+            cpu: 125m
+          limits:
+            memory: 512Mi
+            cpu: '1'
+        env:
+        - name: SOCIAL_DB_CONNECTION_LIMIT
+          value: '3'
+        - name: SOCIAL_TS_PORT
+          value: '8080'
+        ports:
+        - name: http
+          containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 6
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 6
+      terminationGracePeriodSeconds: 30
+      enableServiceLinks: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: social-ts
+  namespace: mreader-user
+  labels:
+    mreader.io/plane: user
+spec:
+  selector:
+    app: social-ts
+    part-of: mreader
+  ports:
+  - name: http
+    port: 8080
+    targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: mreader-user
+  labels:
+    mreader.io/plane: user
+spec:
+  selector:
+    matchLabels: &id001
+      app: frontend
+      part-of: mreader
+      mreader.io/plane: user
+  template:
+    metadata:
+      labels: *id001
+    spec:
+      containers:
+      - name: frontend
+        image: mreader/frontend:v1.3.0-rc4.84
+        imagePullPolicy: Never
+        envFrom:
+        - secretRef:
+            name: mreader-env-frontend
+        resources:
+          requests:
+            memory: 64Mi
+            cpu: 25m
+          limits:
+            memory: 192Mi
+            cpu: 250m
+        ports:
+        - name: http
+          containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 6
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 6
+        env:
+        - name: MREADER_ADMIN_PLANE
+          value: 'false'
+      terminationGracePeriodSeconds: 30
+      enableServiceLinks: false
+  replicas: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: mreader-user
+  labels:
+    mreader.io/plane: user
+spec:
+  selector:
+    app: frontend
+    part-of: mreader
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-worker
+  namespace: mreader-user
+  labels:
+    mreader.io/plane: user
+spec:
+  selector:
+    matchLabels: &id001
+      app: notification-worker
+      part-of: mreader
+      mreader.io/plane: user
+  template:
+    metadata:
+      labels: *id001
+    spec:
+      containers:
+      - name: notification-worker
+        image: mreader/notification-worker:v1.3.0-rc4.84
+        imagePullPolicy: Never
+        envFrom:
+        - secretRef:
+            name: mreader-env-notification-worker
+        resources:
+          requests:
+            memory: 96Mi
+            cpu: 50m
+          limits:
+            memory: 256Mi
+            cpu: 500m
+        env:
+        - name: NOTIFICATION_DB_MAX_CONNS
+          value: '2'
+        - name: NOTIFICATION_WORKER_PORT
+          value: '8080'
+        ports:
+        - name: http
+          containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 6
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 6
+      terminationGracePeriodSeconds: 30
+      enableServiceLinks: false
+  replicas: 0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-worker
+  namespace: mreader-user
+  labels:
+    mreader.io/plane: user
+spec:
+  selector:
+    app: notification-worker
+    part-of: mreader
+  ports:
+  - name: http
+    port: 8080
+    targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: realtime-go
+  namespace: mreader-user
+  labels:
+    mreader.io/plane: user
+spec:
+  selector:
+    matchLabels: &id001
+      app: realtime-go
+      part-of: mreader
+      mreader.io/plane: user
+  template:
+    metadata:
+      labels: *id001
+    spec:
+      containers:
+      - name: realtime-go
+        image: mreader/realtime-go:v1.3.0-rc4.84
+        imagePullPolicy: Never
+        envFrom:
+        - secretRef:
+            name: mreader-env-realtime-go
+        resources:
+          requests:
+            memory: 128Mi
+            cpu: 75m
+          limits:
+            memory: 256Mi
+            cpu: 500m
+        env:
+        - name: REALTIME_DB_MAX_CONNS
+          value: '2'
+        - name: REALTIME_PORT
+          value: '8080'
+        ports:
+        - name: http
+          containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 6
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 6
+      terminationGracePeriodSeconds: 30
+      enableServiceLinks: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: realtime-go
+  namespace: mreader-user
+  labels:
+    mreader.io/plane: user
+spec:
+  selector:
+    app: realtime-go
+    part-of: mreader
+  ports:
+  - name: http
+    port: 8080
+    targetPort: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reader-go-edge-auth
+  namespace: mreader-user
+  labels:
+    mreader.io/plane: user
+spec:
+  type: LoadBalancer
+  selector:
+    app: reader-go
+    part-of: mreader
+  ports:
+  - name: http
+    port: 18082
+    targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-gateway
+  namespace: mreader-user
+  labels:
+    mreader.io/plane: user
+spec:
+  replicas: 1
+  selector:
+    matchLabels: &id001
+      app: user-gateway
+      part-of: mreader
+      mreader.io/plane: user
+  template:
+    metadata:
+      labels: *id001
+    spec:
+      containers:
+      - name: user-gateway
+        image: caddy:2.11.4-alpine
+        ports:
+        - name: http
+          containerPort: 80
+        env:
+        - name: CADDY_SITE_ADDRESS
+          value: :80
+        resources:
+          requests:
+            memory: 96Mi
+            cpu: 50m
+          limits:
+            memory: 256Mi
+            cpu: 500m
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+          periodSeconds: 10
+          timeoutSeconds: 3
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 3
+        volumeMounts:
+        - name: cfg
+          mountPath: /etc/caddy/Caddyfile
+          subPath: Caddyfile
+          readOnly: true
+      volumes:
+      - name: cfg
+        configMap:
+          name: user-gateway-config
+      enableServiceLinks: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-gateway
+  namespace: mreader-user
+  labels:
+    mreader.io/plane: user
+spec:
+  type: LoadBalancer
+  selector:
+    app: user-gateway
+    part-of: mreader
+  ports:
+  - name: http
+    port: 8080
+    targetPort: http

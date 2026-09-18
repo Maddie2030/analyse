@@ -1,0 +1,23 @@
+component	gate	command	exit	result	evidence
+catalog_go	Go unit/build	GOTOOLCHAIN=local go test -mod=readonly ./...	1	BLOCKED	go.mod requires Go >=1.25.0; installed Go is 1.23.2
+notification_worker	Go unit/build	GOTOOLCHAIN=local go test -mod=readonly ./...	1	BLOCKED	go.mod requires Go >=1.25.0; installed Go is 1.23.2
+outbox_relay	Go unit/build	GOTOOLCHAIN=local go test -mod=readonly ./...	1	BLOCKED	go.mod requires Go >=1.25.0; installed Go is 1.23.2
+progress_go	Go unit/build	GOTOOLCHAIN=local go test -mod=readonly ./...	1	BLOCKED	go.mod requires Go >=1.25.0; installed Go is 1.23.2
+reader_go	Go unit/build	GOTOOLCHAIN=local go test -mod=readonly ./...	1	BLOCKED	go.mod requires Go >=1.25.0; installed Go is 1.23.2
+realtime_go	Go unit/build	GOTOOLCHAIN=local go test -mod=readonly ./...	1	BLOCKED	go.mod requires Go >=1.25.0; installed Go is 1.23.2
+catalog_go	Go 1.25 recovery	GOTOOLCHAIN=auto go test -mod=readonly ./...	1	BLOCKED	Go 1.25 toolchain download failed: proxy.golang.org DNS connection refused
+frontend	Web build	npm run build	127	BLOCKED	vite unavailable because node_modules is absent
+frontend	Web typecheck	npm run typecheck	2	BLOCKED	global tsc runs but React/project modules and type declarations are absent
+frontend	Dependency restore	npm ci --offline --ignore-scripts	1	BLOCKED	npm cache miss (ENOTCACHED: yocto-queue)
+social_ts	TypeScript build	npm run build	2	BLOCKED	project dependencies/types are absent
+social_ts	Clean dependency restore	npm ci --offline --ignore-scripts	1	BLOCKED	package-lock.json is absent
+social_ts	Dependency restore	npm install --offline --ignore-scripts --no-audit --no-fund	1	BLOCKED	npm cache miss (ENOTCACHED: @fastify/cookie)
+android	Android debug build	./gradlew --offline :app:assembleDebug	6	BLOCKED	bootstrap attempted Gradle 9.6.0 download; services.gradle.org DNS resolution failed
+shared	Python compile	python -m compileall -q shared	0	PASS	Python source compiles
+image_service	Python compile	python -m compileall -q services/image_service	0	PASS	Python source compiles
+image_service	Runtime import	PYTHONPATH=shared:services/image_service python -c 'import app.main'	1	BLOCKED	missing redis package
+scraper_service	Python compile	python -m compileall -q services/scraper_service	0	PASS	Python source compiles
+scraper_service	Runtime import	PYTHONPATH=shared:services/scraper_service python -c 'import app.main'	1	BLOCKED	missing asyncpg package
+scraper_service	Focused unit tests	PYTHONPATH=shared:services/scraper_service python -m pytest -q services/scraper_service/tests	2	BLOCKED	collection stops on missing selectolax
+tests/api	API harness safety	PYTHONPATH=tests/api python -m pytest -q tests/api/test_00_harness_safety.py	4	BLOCKED	conftest import stops on missing psycopg; no API request issued
+runtime	Docker/PostgreSQL/gateway target	command/runtime inventory	NA	BLOCKED	Docker/Podman/kubectl/psql/postgres absent; Docker socket absent; host.docker.internal unresolved; TEST_* runtime URLs/DSN unset

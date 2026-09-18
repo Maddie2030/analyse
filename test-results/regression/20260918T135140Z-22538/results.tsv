@@ -1,0 +1,6 @@
+test	class	status	exit_code
+api-flow-ownership-static.sh	static	PASS	0
+api-route-coverage-static.sh	static	PASS	0
+api-test-contracts-static.sh	static	PASS	0
+backup-agent-static.sh	static	PASS	0
+backup-daily-policy.sh	static	FAIL	127

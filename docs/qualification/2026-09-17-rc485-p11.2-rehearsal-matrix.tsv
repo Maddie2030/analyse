@@ -1,0 +1,31 @@
+gate	result	evidence
+migration_recovery_python_suite	PASS	123 run; 10 explicit real-Postgres skips; 0 failures
+backup_agent_static	PASS	tests/regression/backup-agent-static.sh
+backup_daily_policy	BLOCKED	fixture hangs in sandbox harness
+backup_local_runtime	BLOCKED	timeout inside fake-environment backup-agent manual runtime-test
+database_operation_ledger_runtime	PASS	tests/regression/database-operation-ledger-runtime.sh
+database_protection_runtime_static	PASS	tests/regression/database-protection-runtime-static.sh
+database_protection_static	PASS	tests/regression/database-protection-static.sh
+database_restore_recovery_static	PASS	tests/regression/database-restore-recovery-static.sh
+rc484_upgrade_recovery_static	PASS	tests/regression/rc484-upgrade-recovery-static.sh
+snapshot_restore_static	PASS	tests/regression/snapshot-restore-static.sh
+snapshot_restore_archive_runtime	PASS	tests/regression/snapshot-restore-archive-runtime.sh
+hybrid_legacy_volume_authority	PASS	tests/regression/hybrid-legacy-volume-authority.sh
+hybrid_legacy_volume_priority	PASS	tests/regression/hybrid-legacy-volume-priority.sh
+hybrid_preupgrade_backup_order	PASS	tests/regression/hybrid-preupgrade-backup-order.sh
+hybrid_pg_volume_inspection	PASS	tests/regression/hybrid-pg-volume-inspection-static.sh
+hybrid_volume_adoption	PASS	tests/regression/hybrid-volume-adoption-runtime.sh
+hybrid_volume_ownership	PASS	tests/regression/hybrid-volume-ownership.sh
+storage_doctor_fixture	PASS	tests/regression/storage-doctor-runtime.sh
+storage_env_contract	PASS	tests/regression/storage-env-contract-static.sh
+storage_env_migration	PASS	tests/regression/storage-env-migration-runtime.sh
+staging_host_portability	PASS	tests/regression/staging-volume-host-portability.sh
+staging_permissions	PASS	tests/regression/staging-volume-permissions.sh
+nas_running_adoption	PASS	tests/regression/nas-running-adoption.sh
+real_postgres_migration_cases	BLOCKED	psql + explicit disposable MREADER_TEST_POSTGRES_DSN unavailable
+production_restore_entrypoint	BLOCKED	Docker unavailable; fails before verified recovery point resolution
+restore_drill_entrypoint	BLOCKED	Docker unavailable
+catalog_restore_entrypoint	BLOCKED	Docker unavailable
+backup_status_entrypoint	BLOCKED	Docker unavailable
+preupgrade_backup_entrypoint	BLOCKED	Docker unavailable
+actual_topology_restore_rehearsal	BLOCKED	Docker/PostgreSQL/Kubernetes runtime unavailable
